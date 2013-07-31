@@ -219,7 +219,7 @@ def suggestion_new():
 	return "new suggestion form"
 	
 @app.route('/suggestion/<int:suggestion_id>', methods=['GET', 'POST'])
-def suggestion_show():
+def suggestion_show(suggestion_id):
 	return "suggestion ".suggestion_id
 
 	
