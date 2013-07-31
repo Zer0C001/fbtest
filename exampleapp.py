@@ -238,7 +238,7 @@ def suggestion_new():
 		app_access_token=requests.get('https://graph.facebook.com/oauth/access_token?grant_type=client_credentials&client_id='+FB_APP_ID+'&client_secret='+FB_APP_SECRET)
 		app_access_token=app_access_token.content
 		app_access_token=app_access_token.split('=')[-1]
-		fbc=fb_call('app/objects/'+fbns+':tst',args={'access_token': app_access_token,'method':'POST', 'object': "{'title':'t'}" })               #fbapi_get_string('/app/objects/'+fbns+':suggestion', params={"object":"{\"category\":\"none\",\"datetime\":\""+datetimestr+"\",\"content\":\""+content+"\"}"}, access_token=token)
+		fbc=fb_call('app/objects/'+fbns+':test',args={'access_token': app_access_token,'method':'POST', 'object': "{'title':'t'}" })               #fbapi_get_string('/app/objects/'+fbns+':suggestion', params={"object":"{\"category\":\"none\",\"datetime\":\""+datetimestr+"\",\"content\":\""+content+"\"}"}, access_token=token)
 		return "save suggestion: <Br>"+content+datetimestr+"<br>"+str(fbc)+'<br>'+str(me)+"<br>"+'app/objects/'+fbns+':test'+'<br>perms:<br>'+str(perm)+'<br>'+str(FB_APP_ID)+'<br>'+str(app_access_token)+get_home()
 	
 @app.route('/suggestion/<int:suggestion_id>', methods=['GET', 'POST'])
