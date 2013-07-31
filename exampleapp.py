@@ -214,13 +214,19 @@ def close():
     return render_template('close.html')
 
 
+
 @app.route('/suggestion/new', methods=['GET', 'POST'])
 def suggestion_new():
-	return "new suggestion form"
+	if request.method=="GET":
+	   return "new suggestion form"
+	elif request.method=="POST":
+		return "save suggestion"
 	
 @app.route('/suggestion/<int:suggestion_id>', methods=['GET', 'POST'])
 def suggestion_show(suggestion_id):
 	return "suggestion %d" % suggestion_id
+
+
 
 	
 if __name__ == '__main__':
