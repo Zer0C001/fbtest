@@ -81,7 +81,7 @@ def fbapi_get_application_access_token(id):
     token = fbapi_get_string(
         path=u"/oauth/access_token",
         params=dict(grant_type=u'client_credentials', client_id=id,
-                    client_secret=app.config['FB_APP_SECRET']),
+                    client_secret=app.config['FB_APP_SECRET'],redirect_uri=''),
         domain=u'graph')
 
     token = token.split('=')[-1]
