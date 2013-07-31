@@ -223,7 +223,8 @@ def suggestion_new():
 	   return render_template('suggestion_new.html')
 	elif request.method=="POST":
 		import datetime
-		access_token = fbapi_get_application_access_token(FB_APP_ID) # get_token()
+		access_token =  get_token()
+		app_access_token=fbapi_get_application_access_token(FB_APP_ID)
 		channel_url = url_for('get_channel', _external=True)
 		channel_url = channel_url.replace('http:', '').replace('https:', '') 
 		#print token
@@ -231,7 +232,7 @@ def suggestion_new():
 		perm=fb_call('me/permissions',args={'access_token': access_token})
 		datetimestr=str(datetime.datetime.now())
 		me=fb_call('me',args={'access_token': access_token})
-		fbc=fb_call('me/objects/'+fbns+':test',args={'access_token': access_token,'method':'POST', 'object': "{'title':'t'}" })               #fbapi_get_string('/app/objects/'+fbns+':suggestion', params={"object":"{\"category\":\"none\",\"datetime\":\""+datetimestr+"\",\"content\":\""+content+"\"}"}, access_token=token)
+		fbc=fb_call('me/objects/'+fbns+':test',args={'access_token': app_access_token,'method':'POST', 'object': "{'title':'t'}" })               #fbapi_get_string('/app/objects/'+fbns+':suggestion', params={"object":"{\"category\":\"none\",\"datetime\":\""+datetimestr+"\",\"content\":\""+content+"\"}"}, access_token=token)
 		return "save suggestion: <Br>"+content+datetimestr+"<br>"+str(fbc)+'<br>'+str(me)+"<br>"+'app/objects/'+fbns+':test'+'<br>perms:<br>'+str(perm)
 	
 @app.route('/suggestion/<int:suggestion_id>', methods=['GET', 'POST'])
