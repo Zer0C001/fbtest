@@ -92,7 +92,7 @@ def fbapi_get_application_access_token(id):
 
 # the above function doesn't seem to work, trying this one
 def fbapi_app_token(id):
-	token=fbapi_get_string(path="/oauth/access_token",params={'grant_type':'client_credentials','client_id':id,'client_secret':app.config['FB_APP_SECRET'],'redirect_uri':get_home() + 'close/'})
+	token=fbapi_get_string(path="/oauth/access_token",params={'grant_type':'client_credentials','client_id':id,'client_secret':app.config['FB_APP_SECRET'],'redirect_uri':'https://www.facebook.com/apps/application.php?id=412288495554359'})
 	return token
 
 
