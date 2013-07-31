@@ -229,8 +229,8 @@ def suggestion_new():
 		content=request.form['content']
 		datetimestr=str(datetime.datetime.now())
 		me=fb_call('me',args={'access_token': access_token})
-		fbc=fb_call('app/objects/'+fbns+':test',args={'access_token': access_token,'method':'post', 'object': "{'title':'t','type':'openpatest:test'}" })               #fbapi_get_string('/app/objects/'+fbns+':suggestion', params={"object":"{\"category\":\"none\",\"datetime\":\""+datetimestr+"\",\"content\":\""+content+"\"}"}, access_token=token)
-		return "save suggestion: <Br>"+content+datetimestr+"<br>"+str(fbc)+'<br>'+str(me)
+		fbc=fb_call('app/objects/'+fbns+':test',args={'access_token': access_token,'method':'post', 'object': "{'title':'t'}" })               #fbapi_get_string('/app/objects/'+fbns+':suggestion', params={"object":"{\"category\":\"none\",\"datetime\":\""+datetimestr+"\",\"content\":\""+content+"\"}"}, access_token=token)
+		return "save suggestion: <Br>"+content+datetimestr+"<br>"+str(fbc)+'<br>'+str(me)+"<br>"+'app/objects/'+fbns+':test'
 	
 @app.route('/suggestion/<int:suggestion_id>', methods=['GET', 'POST'])
 def suggestion_show(suggestion_id):
