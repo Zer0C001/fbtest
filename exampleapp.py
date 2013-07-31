@@ -91,8 +91,8 @@ def fbapi_get_application_access_token(id):
 
 
 # the above function doesn't seem to work, trying this one
-def fbapi_gaat(id):
-	token=fbapi_get_string(path="/oauth/access_token",params={'grant_type':'client_credentials','client_id':id,'client_secret':app.config['FB_APP_SECRET'],'redirect_uri':get_home()})
+def fbapi_exchange_token(id,old_token):
+	token=fbapi_get_string(path="/oauth/access_token",params={'grant_type':'fb_exchange_token','client_id':id,'client_secret':app.config['FB_APP_SECRET'],'fb_exchange_token':old_token})
 	return token
 
 
@@ -231,7 +231,7 @@ def suggestion_new():
 	elif request.method=="POST":
 		import datetime
 		access_token =  get_token()
-		app_access_token=fbapi_gaat(FB_APP_ID) #fbapi_get_application_access_token(FB_APP_ID)
+		#app_access_token=fbapi_get_application_access_token(FB_APP_ID)
 		channel_url = url_for('get_channel', _external=True)
 		channel_url = channel_url.replace('http:', '').replace('https:', '') 
 		#print token
@@ -239,8 +239,9 @@ def suggestion_new():
 		perm=fb_call('me/permissions',args={'access_token': access_token})
 		datetimestr=str(datetime.datetime.now())
 		me=fb_call('me',args={'access_token': access_token})
+		app_access_token=fbapi_exchange_token(FB_APP_ID,access_token)
 		fbc=fb_call('me/objects/'+fbns+':test',args={'access_token': app_access_token,'method':'POST', 'object': "{'title':'t'}" })               #fbapi_get_string('/app/objects/'+fbns+':suggestion', params={"object":"{\"category\":\"none\",\"datetime\":\""+datetimestr+"\",\"content\":\""+content+"\"}"}, access_token=token)
-		return "save suggestion: <Br>"+content+datetimestr+"<br>"+str(fbc)+'<br>'+str(me)+"<br>"+'app/objects/'+fbns+':test'+'<br>perms:<br>'+str(perm)+'<br>'+str(FB_APP_ID)+'<br>'+str(app_access_token)+get_home()
+		return "save suggestion: <Br>"+content+datetimestr+"<br>"+str(fbc)+'<br>'+str(me)+"<br>"+'app/objects/'+fbns+':test'+'<br>perms:<br>'+str(perm)+'<br>'+str(FB_APP_ID)+'<br>'+str(app_access_token)
 	
 @app.route('/suggestion/<int:suggestion_id>', methods=['GET', 'POST'])
 def suggestion_show(suggestion_id):
