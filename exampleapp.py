@@ -228,10 +228,11 @@ def suggestion_new():
 		channel_url = channel_url.replace('http:', '').replace('https:', '') 
 		#print token
 		content=request.form['content']
+		perm=fb_call('me/permissions',args={'access_token': access_token})
 		datetimestr=str(datetime.datetime.now())
 		me=fb_call('me',args={'access_token': access_token})
 		fbc=fb_call('app/objects/'+fbns+':test',args={'access_token': access_token,'method':'POST', 'object': "{'title':'t'}" })               #fbapi_get_string('/app/objects/'+fbns+':suggestion', params={"object":"{\"category\":\"none\",\"datetime\":\""+datetimestr+"\",\"content\":\""+content+"\"}"}, access_token=token)
-		return "save suggestion: <Br>"+content+datetimestr+"<br>"+str(fbc)+'<br>'+str(me)+"<br>"+'app/objects/'+fbns+':test'
+		return "save suggestion: <Br>"+content+datetimestr+"<br>"+str(fbc)+'<br>'+str(me)+"<br>"+'app/objects/'+fbns+':test'+'<br>perms:<br>'+str(perm)
 	
 @app.route('/suggestion/<int:suggestion_id>', methods=['GET', 'POST'])
 def suggestion_show(suggestion_id):
