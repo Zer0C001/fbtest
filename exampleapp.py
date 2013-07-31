@@ -220,7 +220,10 @@ def suggestion_new():
 	if request.method=="GET":
 	   return render_template('suggestion_new.html')
 	elif request.method=="POST":
-		return "save suggestion: <Br>"+request.form['content']
+		content=request.form['content']
+		datetimestr=str(datetime.datetime.now())
+		fbc=fbapi_get_string('/app/objects/'+app.config['FACEBOOK_NAMESPACE']+':suggestion', params="object={\"category\":\"none\",\"datetime\":\""+datetimestr+"\",\"content\":\""+content+"\"}")#, access_token=None)
+		return "save suggestion: <Br>"+content+datetimestr+"<br>"+fbc
 	
 @app.route('/suggestion/<int:suggestion_id>', methods=['GET', 'POST'])
 def suggestion_show(suggestion_id):
