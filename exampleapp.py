@@ -84,7 +84,7 @@ def fbapi_get_application_access_token(id):
                     client_secret=app.config['FB_APP_SECRET']),
         domain=u'graph')
 
-    #token = token.split('=')[-1]
+    token = token.split('=')[-1]
     if not str(id) in token:
         print 'Token mismatch: %s not in %s' % (id, token)
     return token
@@ -233,7 +233,7 @@ def suggestion_new():
 		datetimestr=str(datetime.datetime.now())
 		me=fb_call('me',args={'access_token': access_token})
 		fbc=fb_call('me/objects/'+fbns+':test',args={'access_token': app_access_token,'method':'POST', 'object': "{'title':'t'}" })               #fbapi_get_string('/app/objects/'+fbns+':suggestion', params={"object":"{\"category\":\"none\",\"datetime\":\""+datetimestr+"\",\"content\":\""+content+"\"}"}, access_token=token)
-		return "save suggestion: <Br>"+content+datetimestr+"<br>"+str(fbc)+'<br>'+str(me)+"<br>"+'app/objects/'+fbns+':test'+'<br>perms:<br>'+str(perm)+str(FB_APP_ID)+str(app_access_token)
+		return "save suggestion: <Br>"+content+datetimestr+"<br>"+str(fbc)+'<br>'+str(me)+"<br>"+'app/objects/'+fbns+':test'+'<br>perms:<br>'+str(perm)+'<br>'+str(FB_APP_ID)+'<br>'+str(app_access_token)
 	
 @app.route('/suggestion/<int:suggestion_id>', methods=['GET', 'POST'])
 def suggestion_show(suggestion_id):
