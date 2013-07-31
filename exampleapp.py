@@ -222,11 +222,11 @@ def suggestion_new():
 	   return render_template('suggestion_new.html')
 	elif request.method=="POST":
 		import datetime
-		token=get_token()
-		print token
+		access_token=get_token()
+		#print token
 		content=request.form['content']
 		datetimestr=str(datetime.datetime.now())
-		fbc=fbapi_get_string('/app/objects/'+fbns+':suggestion', params={"object":"{\"category\":\"none\",\"datetime\":\""+datetimestr+"\",\"content\":\""+content+"\"}"}, access_token=token)
+		fbc=fb_call('me/friends',args={'access_token': access_token, 'limit': 4})               #fbapi_get_string('/app/objects/'+fbns+':suggestion', params={"object":"{\"category\":\"none\",\"datetime\":\""+datetimestr+"\",\"content\":\""+content+"\"}"}, access_token=token)
 		return "save suggestion: <Br>"+content+datetimestr+"<br>"+fbc
 	
 @app.route('/suggestion/<int:suggestion_id>', methods=['GET', 'POST'])
