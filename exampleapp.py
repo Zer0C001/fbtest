@@ -84,7 +84,7 @@ def fbapi_get_application_access_token(id):
                     client_secret=app.config['FB_APP_SECRET']),
         domain=u'graph')
 
-    token = token.split('=')[-1]
+    #token = token.split('=')[-1]
     if not str(id) in token:
         print 'Token mismatch: %s not in %s' % (id, token)
     return token
