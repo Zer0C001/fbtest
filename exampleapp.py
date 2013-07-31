@@ -92,7 +92,7 @@ def fbapi_get_application_access_token(id):
 
 # the above function doesn't seem to work, trying this one
 def fbapi_exchange_token(id,old_token):
-	token=fbapi_get_string(path="/oauth/access_token",params={'grant_type':'fb_exchange_token','client_id':id,'client_secret':app.config['FB_APP_SECRET'],'fb_exchange_token':old_token},'redirect_url':get_home())
+	token=fbapi_get_string(path="/oauth/access_token",params={'grant_type':'fb_exchange_token','client_id':id,'client_secret':app.config['FB_APP_SECRET'],'fb_exchange_token':old_token,'redirect_url':get_home()})
 	return token
 
 
