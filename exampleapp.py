@@ -18,7 +18,7 @@ requests = requests.session()
 app_url = 'https://graph.facebook.com/{0}'.format(FB_APP_ID)
 FB_APP_NAME = json.loads(requests.get(app_url).content).get('name')
 FB_APP_SECRET = os.environ.get('FACEBOOK_SECRET')
-
+fbns='openpatest'
 
 def oauth_login_url(preserve_path=True, next_url=None):
     fb_login_uri = ("https://www.facebook.com/dialog/oauth"
@@ -223,7 +223,7 @@ def suggestion_new():
 		import datetime
 		content=request.form['content']
 		datetimestr=str(datetime.datetime.now())
-		fbc=fbapi_get_string('/app/objects/'+app.config['FBNS']+':suggestion', params="object={\"category\":\"none\",\"datetime\":\""+datetimestr+"\",\"content\":\""+content+"\"}")#, access_token=None)
+		fbc=fbapi_get_string('/app/objects/'+fbns+':suggestion', params="object={\"category\":\"none\",\"datetime\":\""+datetimestr+"\",\"content\":\""+content+"\"}")#, access_token=None)
 		return "save suggestion: <Br>"+content+datetimestr+"<br>"+fbc
 	
 @app.route('/suggestion/<int:suggestion_id>', methods=['GET', 'POST'])
