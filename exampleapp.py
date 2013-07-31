@@ -172,7 +172,7 @@ def index():
     # print get_home()
 
 
-    access_token = get_token()
+    access_token = fbapi_get_application_access_token(FB_APP_ID) #get_token()
 
     channel_url = url_for('get_channel', _external=True)
     channel_url = channel_url.replace('http:', '').replace('https:', '')
@@ -181,22 +181,22 @@ def index():
 
         me = fb_call('me', args={'access_token': access_token})
         fb_app = fb_call(FB_APP_ID, args={'access_token': access_token})
-        likes = fb_call('me/likes',
-                        args={'access_token': access_token, 'limit': 4})
-        friends = fb_call('me/friends',
-                          args={'access_token': access_token, 'limit': 4})
-        photos = fb_call('me/photos',
-                         args={'access_token': access_token, 'limit': 16})
+        likes = '' #fb_call('me/likes',
+                     #   args={'access_token': access_token, 'limit': 4})
+        friends = ''#fb_call('me/friends',
+                      #    args={'access_token': access_token, 'limit': 4})
+        photos =''# fb_call('me/photos',
+                   #      args={'access_token': access_token, 'limit': 16})
 
         redir = get_home() + 'close/'
         POST_TO_WALL = ("https://www.facebook.com/dialog/feed?redirect_uri=%s&"
                         "display=popup&app_id=%s" % (redir, FB_APP_ID))
 
-        app_friends = fql(
-            "SELECT uid, name, is_app_user, pic_square "
-            "FROM user "
-            "WHERE uid IN (SELECT uid2 FROM friend WHERE uid1 = me()) AND "
-            "  is_app_user = 1", access_token)
+        #app_friends = fql(
+         #   "SELECT uid, name, is_app_user, pic_square "
+          #  "FROM user "
+           # "WHERE uid IN (SELECT uid2 FROM friend WHERE uid1 = me()) AND "
+           # "  is_app_user = 1", access_token)
 
         SEND_TO = ('https://www.facebook.com/dialog/send?'
                    'redirect_uri=%s&display=popup&app_id=%s&link=%s'
