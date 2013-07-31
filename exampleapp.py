@@ -218,7 +218,7 @@ def close():
 @app.route('/suggestion/new', methods=['GET', 'POST'])
 def suggestion_new():
 	if request.method=="GET":
-	   return "new suggestion form"
+	   return render_template('suggestion_new.html')
 	elif request.method=="POST":
 		return "save suggestion"
 	
