@@ -213,6 +213,12 @@ def get_channel():
 def close():
     return render_template('close.html')
 
+
+@app.route('/suggestion/new', methods=['GET', 'POST'])
+def suggestion_new():
+	return "new suggestion form"
+	
+	
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
     if app.config.get('FB_APP_ID') and app.config.get('FB_APP_SECRET'):
