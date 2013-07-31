@@ -91,9 +91,6 @@ def fbapi_get_application_access_token(id):
 
 
 # the above function doesn't seem to work, trying this one
-def fbapi_app_token(id):
-	token=fbapi_get_string(path="/oauth/access_token",params={'grant_type':'client_credentials','client_id':id,'client_secret':app.config['FB_APP_SECRET'],'redirect_uri':urllib.quote(get_home(),'')})
-	return token
 
 
 
@@ -238,8 +235,8 @@ def suggestion_new():
 		perm=fb_call('me/permissions',args={'access_token': access_token})
 		datetimestr=str(datetime.datetime.now())
 		me=fb_call('me',args={'access_token': access_token})
-		app_access_token=fbapi_app_token(FB_APP_ID)
-		fbc=fb_call('app/objects/'+fbns+':test',args={'access_token': access_token,'method':'POST', 'object': "{'title':'t'}" })               #fbapi_get_string('/app/objects/'+fbns+':suggestion', params={"object":"{\"category\":\"none\",\"datetime\":\""+datetimestr+"\",\"content\":\""+content+"\"}"}, access_token=token)
+		app_access_token=fbcall('oauth/access_token',args={grant_type='client_credentials','client_id'=FB_APP_ID,'client_secret':FB_APP_SECRET})
+		fbc=fb_call('app/objects/'+fbns+':test',args={'access_token': app_access_token,'method':'POST', 'object': "{'title':'t'}" })               #fbapi_get_string('/app/objects/'+fbns+':suggestion', params={"object":"{\"category\":\"none\",\"datetime\":\""+datetimestr+"\",\"content\":\""+content+"\"}"}, access_token=token)
 		return "save suggestion: <Br>"+content+datetimestr+"<br>"+str(fbc)+'<br>'+str(me)+"<br>"+'app/objects/'+fbns+':test'+'<br>perms:<br>'+str(perm)+'<br>'+str(FB_APP_ID)+'<br>'+str(app_access_token)+get_home()
 	
 @app.route('/suggestion/<int:suggestion_id>', methods=['GET', 'POST'])
