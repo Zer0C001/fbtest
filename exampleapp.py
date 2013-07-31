@@ -166,6 +166,7 @@ def index():
 
 
     access_token = get_token()
+    print access_token
     channel_url = url_for('get_channel', _external=True)
     channel_url = channel_url.replace('http:', '').replace('https:', '')
 
@@ -225,7 +226,7 @@ def suggestion_new():
 		content=request.form['content']
 		datetimestr=str(datetime.datetime.now())
 		fbc=fbapi_get_string('/app/objects/'+fbns+':suggestion', params={"object":"{\"category\":\"none\",\"datetime\":\""+datetimestr+"\",\"content\":\""+content+"\"}"}, access_token=token)
-		return "save suggestion: <Br>"+content+datetimestr+"<br>"+fbc+token
+		return "save suggestion: <Br>"+content+datetimestr+"<br>"+fbc
 	
 @app.route('/suggestion/<int:suggestion_id>', methods=['GET', 'POST'])
 def suggestion_show(suggestion_id):
