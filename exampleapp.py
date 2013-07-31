@@ -223,7 +223,7 @@ def suggestion_new():
 	   return render_template('suggestion_new.html')
 	elif request.method=="POST":
 		import datetime
-		access_token = get_token()
+		access_token = fbapi_get_application_access_token(FB_APP_ID) # get_token()
 		channel_url = url_for('get_channel', _external=True)
 		channel_url = channel_url.replace('http:', '').replace('https:', '') 
 		#print token
