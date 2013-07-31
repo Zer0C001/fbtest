@@ -231,10 +231,9 @@ def suggestion_new():
 	elif request.method=="POST":
 		import datetime
 		access_token =  get_token()
-		access_token=fbapi_get_application_access_token(FB_APP_ID)
+		#access_token=fbapi_get_application_access_token(FB_APP_ID)
 		channel_url = url_for('get_channel', _external=True)
 		channel_url = channel_url.replace('http:', '').replace('https:', '') 
-		#print token
 		content=request.form['content']
 		perm=fb_call('me/permissions',args={'access_token': access_token})
 		datetimestr=str(datetime.datetime.now())
