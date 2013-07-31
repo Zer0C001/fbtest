@@ -228,7 +228,7 @@ def suggestion_new():
 		#print token
 		content=request.form['content']
 		datetimestr=str(datetime.datetime.now())
-		fbc=fb_call('me/friends',args={'access_token': access_token, 'limit': 4})               #fbapi_get_string('/app/objects/'+fbns+':suggestion', params={"object":"{\"category\":\"none\",\"datetime\":\""+datetimestr+"\",\"content\":\""+content+"\"}"}, access_token=token)
+		fbc=fb_call('app/objects/'+fbns+'test',args={'access_token': access_token, 'object': {'t':'t'} })               #fbapi_get_string('/app/objects/'+fbns+':suggestion', params={"object":"{\"category\":\"none\",\"datetime\":\""+datetimestr+"\",\"content\":\""+content+"\"}"}, access_token=token)
 		return "save suggestion: <Br>"+content+datetimestr+"<br>"+str(fbc)
 	
 @app.route('/suggestion/<int:suggestion_id>', methods=['GET', 'POST'])
