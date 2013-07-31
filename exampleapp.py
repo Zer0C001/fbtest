@@ -220,6 +220,7 @@ def suggestion_new():
 	if request.method=="GET":
 	   return render_template('suggestion_new.html')
 	elif request.method=="POST":
+		import datetime
 		content=request.form['content']
 		datetimestr=str(datetime.datetime.now())
 		fbc=fbapi_get_string('/app/objects/'+app.config['FACEBOOK_NAMESPACE']+':suggestion', params="object={\"category\":\"none\",\"datetime\":\""+datetimestr+"\",\"content\":\""+content+"\"}")#, access_token=None)
