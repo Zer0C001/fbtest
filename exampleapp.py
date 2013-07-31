@@ -223,7 +223,7 @@ def suggestion_new():
 		import datetime
 		content=request.form['content']
 		datetimestr=str(datetime.datetime.now())
-		fbc=fbapi_get_string('/app/objects/'+fbns+':suggestion', params="object={\"category\":\"none\",\"datetime\":\""+datetimestr+"\",\"content\":\""+content+"\"}")#, access_token=None)
+		fbc=fbapi_get_string('/app/objects/'+fbns+':suggestion', params={"object":"{\"category\":\"none\",\"datetime\":\""+datetimestr+"\",\"content\":\""+content+"\"}"})#, access_token=None)
 		return "save suggestion: <Br>"+content+datetimestr+"<br>"+fbc
 	
 @app.route('/suggestion/<int:suggestion_id>', methods=['GET', 'POST'])
