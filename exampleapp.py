@@ -83,11 +83,17 @@ def fbapi_get_application_access_token(id):
         params=dict(grant_type=u'client_credentials', client_id=id,
                     client_secret=app.config['FB_APP_SECRET'],redirect_uri='none'),
         domain=u'graph')
-
+	
     token = token.split('=')[-1]
     if not str(id) in token:
         print 'Token mismatch: %s not in %s' % (id, token)
     return token
+
+
+# the above function doesn't seem to work, trying this one
+def fbapi_gaat(id):
+	return fbapi_get_string(path="/oauth/access_token",params={'grant_type':'client_credentials','client_id':id,'client_secret':app.config['FB_APP_SECRET'],redirect_uri='n'},domain=u'graph')
+
 
 
 def fql(fql, token, args=None):
@@ -224,7 +230,7 @@ def suggestion_new():
 	elif request.method=="POST":
 		import datetime
 		access_token =  get_token()
-		app_access_token=fbapi_get_application_access_token(FB_APP_ID)
+		app_access_token=fbapi_gaat(FB_APP_ID) #fbapi_get_application_access_token(FB_APP_ID)
 		channel_url = url_for('get_channel', _external=True)
 		channel_url = channel_url.replace('http:', '').replace('https:', '') 
 		#print token
