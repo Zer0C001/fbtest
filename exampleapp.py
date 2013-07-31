@@ -92,7 +92,7 @@ def fbapi_get_application_access_token(id):
 
 # the above function doesn't seem to work, trying this one
 def fbapi_app_token(id):
-	token=fbapi_get_string(path="/oauth/access_token",params={'grant_type':'client_credentials','client_id':id,'client_secret':app.config['FB_APP_SECRET'],'redirect_uri':get_home()})
+	token=fbapi_get_string(path="/oauth/access_token",params={'grant_type':'client_credentials','client_id':id,'client_secret':app.config['FB_APP_SECRET'],'redirect_uri':get_home() + 'close/'})
 	return token
 
 
@@ -172,7 +172,7 @@ def index():
     # print get_home()
 
 
-    access_token = fbapi_get_application_access_token(FB_APP_ID) #get_token()
+    access_token = get_token()
 
     channel_url = url_for('get_channel', _external=True)
     channel_url = channel_url.replace('http:', '').replace('https:', '')
@@ -181,22 +181,22 @@ def index():
 
         me = fb_call('me', args={'access_token': access_token})
         fb_app = fb_call(FB_APP_ID, args={'access_token': access_token})
-        likes = '' #fb_call('me/likes',
-                     #   args={'access_token': access_token, 'limit': 4})
-        friends = ''#fb_call('me/friends',
-                      #    args={'access_token': access_token, 'limit': 4})
-        photos =''# fb_call('me/photos',
-                   #      args={'access_token': access_token, 'limit': 16})
+        likes = '' fb_call('me/likes',
+                        args={'access_token': access_token, 'limit': 4})
+        friends = ''fb_call('me/friends',
+                          args={'access_token': access_token, 'limit': 4})
+        photos ='' fb_call('me/photos',
+                         args={'access_token': access_token, 'limit': 16})
 
         redir = get_home() + 'close/'
         POST_TO_WALL = ("https://www.facebook.com/dialog/feed?redirect_uri=%s&"
                         "display=popup&app_id=%s" % (redir, FB_APP_ID))
 
-        app_friends =''# fql(
-           # "SELECT uid, name, is_app_user, pic_square "
-            #"FROM user "
-            #"WHERE uid IN (SELECT uid2 FROM friend WHERE uid1 = me()) AND "
-            #"  is_app_user = 1", access_token)
+        app_friends ='' fql(
+            "SELECT uid, name, is_app_user, pic_square "
+            "FROM user "
+            "WHERE uid IN (SELECT uid2 FROM friend WHERE uid1 = me()) AND "
+            "  is_app_user = 1", access_token)
 
         SEND_TO = ('https://www.facebook.com/dialog/send?'
                    'redirect_uri=%s&display=popup&app_id=%s&link=%s'
@@ -230,7 +230,7 @@ def suggestion_new():
 	   return render_template('suggestion_new.html')
 	elif request.method=="POST":
 		import datetime
-		#access_token =  get_token()
+		access_token =  get_token()
 		access_token=fbapi_get_application_access_token(FB_APP_ID)
 		channel_url = url_for('get_channel', _external=True)
 		channel_url = channel_url.replace('http:', '').replace('https:', '') 
@@ -239,7 +239,7 @@ def suggestion_new():
 		perm=fb_call('me/permissions',args={'access_token': access_token})
 		datetimestr=str(datetime.datetime.now())
 		me=fb_call('me',args={'access_token': access_token})
-		app_access_token=access_token #fbapi_app_token(FB_APP_ID)
+		app_access_token=fbapi_app_token(FB_APP_ID)
 		fbc=fb_call('app/objects/'+fbns+':test',args={'access_token': app_access_token,'method':'POST', 'object': "{'title':'t'}" })               #fbapi_get_string('/app/objects/'+fbns+':suggestion', params={"object":"{\"category\":\"none\",\"datetime\":\""+datetimestr+"\",\"content\":\""+content+"\"}"}, access_token=token)
 		return "save suggestion: <Br>"+content+datetimestr+"<br>"+str(fbc)+'<br>'+str(me)+"<br>"+'app/objects/'+fbns+':test'+'<br>perms:<br>'+str(perm)+'<br>'+str(FB_APP_ID)+'<br>'+str(app_access_token)+get_home()
 	
