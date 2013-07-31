@@ -224,7 +224,7 @@ def suggestion_new():
 	
 @app.route('/suggestion/<int:suggestion_id>', methods=['GET', 'POST'])
 def suggestion_show(suggestion_id):
-	return "suggestion %d" % suggestion_id
+	return render_template('suggestion_show.html')
 
 
 
