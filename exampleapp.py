@@ -218,6 +218,10 @@ def close():
 def suggestion_new():
 	return "new suggestion form"
 	
+@app.route('/suggestion/<int:suggestion_id>', methods=['GET', 'POST'])
+def suggestion_show():
+	return "suggestion %d" % suggestion_id
+
 	
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
