@@ -222,7 +222,9 @@ def suggestion_new():
 	   return render_template('suggestion_new.html')
 	elif request.method=="POST":
 		import datetime
-		access_token=get_token()
+		access_token = get_token()
+		channel_url = url_for('get_channel', _external=True)
+		channel_url = channel_url.replace('http:', '').replace('https:', '') 
 		#print token
 		content=request.form['content']
 		datetimestr=str(datetime.datetime.now())
