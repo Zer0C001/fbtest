@@ -220,7 +220,7 @@ def suggestion_new():
 	if request.method=="GET":
 	   return render_template('suggestion_new.html')
 	elif request.method=="POST":
-		return "save suggestion: <Br>"+content
+		return "save suggestion: <Br>"+request.form['content']
 	
 @app.route('/suggestion/<int:suggestion_id>', methods=['GET', 'POST'])
 def suggestion_show(suggestion_id):
