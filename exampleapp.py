@@ -220,7 +220,7 @@ def suggestion_new():
 	
 @app.route('/suggestion/<int:suggestion_id>', methods=['GET', 'POST'])
 def suggestion_show():
-	return "suggestion %d" % suggestion_id
+	return "suggestion ".suggestion_id
 
 	
 if __name__ == '__main__':
