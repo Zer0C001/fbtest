@@ -183,7 +183,8 @@ def index():
         
         app_access_token=fbapi_get_application_access_token(FB_APP_ID)
         categories=fb_call('app/objects/'+FBNS+':category',args={'access_token': app_access_token})
-        content=str(categories)
+        num_cat=len(categories['data'])
+        content=str(categories)+'   '+str(num_cat)
 
         return render_template(
             'index.html', app_id=FB_APP_ID, token=access_token, app=fb_app,
