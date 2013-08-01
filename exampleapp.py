@@ -188,7 +188,7 @@ def index():
         if num_cat==0:
         	init_cat=fb_call('app/objects/'+FBNS+':category',args={'access_token': app_access_token,'method':'POST', 'object': "{'title':'Uncategorized'}"})
         	#content+='   '+str(init_cat)
-        l_obj=fb_call('app/objects/'+FBNS+':suggestion',args={'access_token': app_access_token,'fields':'id,created_time,openpatest:creator_id'})#,pos_votes,neg_votes,category_id'})
+        l_obj=fb_call('app/objects/'+FBNS+':suggestion',args={'access_token': app_access_token,'fields':'id,created_time,data'})#,pos_votes,neg_votes,category_id'})
         if l_obj.has_key('data'):
           l_obj=l_obj['data']
           l_obj.sort(key=lambda k: k['created_time'])
