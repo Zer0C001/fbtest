@@ -232,9 +232,10 @@ def suggestion_new():
 		perm=fb_call('me/permissions',args={'access_token': access_token})
 		datetimestr=str(datetime.datetime.now())
 		me=fb_call('me',args={'access_token': access_token})
+		# facebook object suggestion ( og:title:'<the suggestion text>', creator:'<int:me.id>',)
 		fbc=fb_call('app/objects/'+fbns+':test',args={'access_token': app_access_token,'method':'POST', 'object': "{'title':'t'}" })
 		l_obj=fb_call('app/objects/'+fbns+':test',args={'access_token': app_access_token,'fields':'id,created_time'})
-		return "save suggestion: <Br>"+content+datetimestr+"<br>"+str(fbc)+'<br>'+str(me)+"<br>"+'app/objects/'+fbns+':test'+'<br>perms:<br>'+str(perm)+'<br>'+str(FB_APP_ID)+'<br>'+str(app_access_token)+get_home()+'<br><br>'+str(l_obj)
+		return "save suggestion: <Br>"+content+datetimestr+"<br>"+str(fbc)+'<br>'+str(me.id)+"<br>"+'app/objects/'+fbns+':test'+'<br>perms:<br>'+str(perm)+'<br>'+str(FB_APP_ID)+'<br>'+str(app_access_token)+get_home()+'<br><br>'+str(l_obj)
 	
 @app.route('/suggestion/<int:suggestion_id>', methods=['GET', 'POST'])
 def suggestion_show(suggestion_id):
