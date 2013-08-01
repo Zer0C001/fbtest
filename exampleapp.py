@@ -18,7 +18,7 @@ requests = requests.session()
 app_url = 'https://graph.facebook.com/{0}'.format(FB_APP_ID)
 FB_APP_NAME = json.loads(requests.get(app_url).content).get('name')
 FB_APP_SECRET = os.environ.get('FACEBOOK_SECRET')
-fbns='openpatest'
+FBNS=os.environ.get('FBNS')
 
 def oauth_login_url(preserve_path=True, next_url=None):
     fb_login_uri = ("https://www.facebook.com/dialog/oauth"
@@ -202,7 +202,7 @@ def index():
             'index.html', app_id=FB_APP_ID, token=access_token, likes=likes,
             friends=friends, photos=photos, app_friends=app_friends, app=fb_app,
             me=me, POST_TO_WALL=POST_TO_WALL, SEND_TO=SEND_TO, url=url,
-            channel_url=channel_url, name=FB_APP_NAME)
+            channel_url=channel_url, name=FB_APP_NAME+' '+FBNS)
     else:
         permission_list = ",".join(app.config['FBAPI_SCOPE']) 
         return render_template('login.html', app_id=FB_APP_ID, token=access_token, url=request.url, channel_url=channel_url, name=FB_APP_NAME, permission_list=permission_list)
@@ -233,10 +233,10 @@ def suggestion_new():
 		perm=fb_call('me/permissions',args={'access_token': access_token})
 		me=fb_call('me',args={'access_token': access_token,'fields':'id'})
 		# facebook object suggestion required fields ( og:title:'<the suggestion text>', creator:'<int:me.id>',pos_votes:<int>, neg_votes:<int>)
-		fbc=fb_call('app/objects/'+fbns+':test',args={'access_token': app_access_token,'method':'POST', 'object': "{'title':''}" })
+		fbc=fb_call('app/objects/'+FBNS+':test',args={'access_token': app_access_token,'method':'POST', 'object': "{'title':''}" })
 		#facebook object user_suggestion required fields ( og:title:'<empty string>', suggestion_id:<int> )
-		fbc1=fb_call('me/objects/'+fbns+':test',args={'access_token': access_token,'method':'POST', 'object': "{'title':'"+fbc['id']+"'}" })
-		l_obj=fb_call('app/objects/'+fbns+':test',args={'access_token': app_access_token,'fields':'id,created_time'})
+		fbc1=fb_call('me/objects/'+FBNS+':test',args={'access_token': access_token,'method':'POST', 'object': "{'title':'"+fbc['id']+"'}" })
+		l_obj=fb_call('app/objects/'+FBNS+':test',args={'access_token': app_access_token,'fields':'id,created_time'})
 		return "save suggestion: <Br>"+content+"<br>"+str(fbc)+"<br>"+str(fbc1)+'<br>'+str(me['id'])+'<br>perms:<br>'+str(perm)+'<br>'+str(l_obj)+channel_url
 	
 @app.route('/suggestion/<int:suggestion_id>', methods=['GET', 'POST'])
