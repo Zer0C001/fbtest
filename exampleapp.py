@@ -239,7 +239,7 @@ def suggestion_new():
 			fbc={}
 		#facebook object user_suggestion required fields ( og:title:'<empty string>', suggestion_id:<int> )
 		if fbc.has_key('id'):
-		  fbc1=fb_call('me/objects/'+FBNS+':user_suggestion',args={'access_token': access_token,'method':'POST', 'object': "{'title':'',data{'suggestion_id':'"+fbc['id']+"'}}" })
+		  fbc1=fb_call('me/objects/'+FBNS+':user_suggestion',args={'access_token': access_token,'method':'POST', 'object': "{'title':'','data':{'suggestion_id':'"+fbc['id']+"'}}" })
 		else:
 			fbc1='error saving'
 		l_obj=fb_call('app/objects/'+FBNS+':test',args={'access_token': app_access_token,'fields':'id,created_time'})
