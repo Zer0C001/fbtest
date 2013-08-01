@@ -209,7 +209,7 @@ def index():
 
 @app.route('/channel.html', methods=['GET', 'POST'])
 def get_channel():
-    return render_template('channel.html',content='test')
+    return render_template('channel.html')
 
 
 @app.route('/close/', methods=['GET', 'POST'])
@@ -241,7 +241,7 @@ def suggestion_new():
 	
 @app.route('/suggestion/<int:suggestion_id>', methods=['GET', 'POST'])
 def suggestion_show(suggestion_id):
-	return render_template('suggestion_show.html',content=)
+	return render_template('suggestion_show.html',,content='tst')
 
 
 
