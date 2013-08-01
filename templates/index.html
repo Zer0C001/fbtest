@@ -22,7 +22,7 @@
 	{% block content %}
 	{{ content }}
 	<br>
-	{% # for suggestion in suggestions %}
+	{% for suggestion in suggestions %}
 		<br> {{ suggestion.id }}
 	{% endfor %}
 	{% endblock%}
