@@ -80,7 +80,7 @@ def fbapi_auth(code):
 def fbapi_get_application_access_token(id):
 	 token=requests.get('https://graph.facebook.com/oauth/access_token?grant_type=client_credentials&client_id='+id+'&client_secret='+FB_APP_SECRET)
 	 token=token.content
-	 token=app_access_token.split('=')[-1]
+	 token=token.split('=')[-1]
     #token = fbapi_get_string(
     #    path=u"/oauth/access_token",
     #    params=dict(grant_type=u'client_credentials', client_id=id,
@@ -90,11 +90,6 @@ def fbapi_get_application_access_token(id):
 	 if not str(id) in token:
 	     print 'Token mismatch: %s not in %s' % (id, token)
 	 return token
-
-
-# the above function doesn't seem to work, trying this one
-
-
 
 def fql(fql, token, args=None):
     if not args:
