@@ -241,7 +241,9 @@ def suggestion_new():
 	
 @app.route('/suggestion/<int:suggestion_id>', methods=['GET', 'POST'])
 def suggestion_show(suggestion_id):
-	return render_template('suggestion_show.html',content='tst')
+	app_access_token=fbapi_get_application_access_token(FB_APP_ID)
+	suggestion=fb_call(str(suggestion_id),args={'access_token': app_access_token})
+	return render_template('suggestion_show.html',content=str(suggestion))
 
 
 
