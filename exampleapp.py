@@ -188,7 +188,8 @@ def index():
         if num_cat==0:
         	init_cat=fb_call('app/objects/'+FBNS+':category',args={'access_token': app_access_token,'method':'POST', 'object': "{'title':'Uncategorized'}"})
         	#content+='   '+str(init_cat)
-
+        	l_obj=fb_call('app/objects/'+FBNS+':suggestion',args={'access_token': app_access_token,'fields':'id,created_time,pos_votes,neg_votes,category_id'})
+        	content=str(l_obj)
 
         return render_template(
             'index.html', app_id=FB_APP_ID, token=access_token, app=fb_app,
@@ -239,8 +240,8 @@ def suggestion_new():
 		  fbc1=fb_call('me/objects/'+FBNS+':user_suggestion',args={'access_token': access_token,'method':'POST', 'object': "{'title':'','data':{'suggestion_id':'"+fbc['id']+"'}}" })
 		else:
 			fbc1='error saving'
-		l_obj=fb_call('app/objects/'+FBNS+':test',args={'access_token': app_access_token,'fields':'id,created_time'})
-		return "save suggestion: <Br>"+content+"<br>"+str(fbc)+"<br>"+str(fbc1)+'<br>userid: '+str(me['id'])+'<br>perms:<br>'+str(perm)+'<br><br>'+str(l_obj)
+
+		return "save suggestion: <Br>"+content+"<br>"+str(fbc)+"<br>"+str(fbc1)+'<br>userid: '+str(me['id'])+'<br>perms:<br>'+str(perm)+'<br><br>'
 	
 @app.route('/suggestion/<int:suggestion_id>', methods=['GET', 'POST'])
 def suggestion_show(suggestion_id):
