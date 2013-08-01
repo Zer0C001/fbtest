@@ -184,10 +184,10 @@ def index():
         app_access_token=fbapi_get_application_access_token(FB_APP_ID)
         categories=fb_call('app/objects/'+FBNS+':category',args={'access_token': app_access_token})
         num_cat=len(categories['data'])
-        content=str(categories)+'   '+str(num_cat)
+        content=''#str(categories)+'   '+str(num_cat)
         if num_cat==0:
         	init_cat=fb_call('app/objects/'+FBNS+':category',args={'access_token': app_access_token,'method':'POST', 'object': "{'title':'Uncategorized'}"})
-        	content+='   '+str(init_cat)
+        	#content+='   '+str(init_cat)
 
 
         return render_template(
@@ -221,11 +221,17 @@ def suggestion_new():
 		channel_url = url_for('get_channel', _external=True)
 		channel_url = channel_url.replace('http:', '').replace('https:', '') 
 		content=request.form['content']
+		if (not request.form.has_key('category_id')) or request.form['category_id']=='' or request.form['category_id']==None:
+			categories=fb_call('app/objects/'+FBNS+':category',args={'access_token': app_access_token})
+			if len(categories['data'])==1:
+				category_id=categories['data'][0]['id']
+		else:
+			category_id=request.form['category_id']
 		perm=fb_call('me/permissions',args={'access_token': access_token})
 		me=fb_call('me',args={'access_token': access_token,'fields':'id'})
 		# facebook object suggestion required fields ( og:title:'<the suggestion text>', creator_id:'<int:me.id>',pos_votes:<int>, neg_votes:<int>)
 		if me.has_key('id'):
-		  fbc=fb_call('app/objects/'+FBNS+':suggestion',args={'access_token': app_access_token,'method':'POST', 'object': "{'title':'"+content+"','data':{'creator_id':'"+str(me['id'])+"','pos_votes':'0','neg_votes':'0'}}" })
+		  fbc=fb_call('app/objects/'+FBNS+':suggestion',args={'access_token': app_access_token,'method':'POST', 'object': "{'title':'"+content+"','data':{'creator_id':'"+str(me['id'])+"','pos_votes':'0','neg_votes':'0','category_id':'"+category_id+"'}}" })
 		else:
 			fbc={}
 		#facebook object user_suggestion required fields ( og:title:'<empty string>', suggestion_id:<int> )
