@@ -197,7 +197,9 @@ def index():
         		l_obj.reverse()
         	elif sort=='votes':
         		l_obj.sort(key=lambda k: k['data']['pos_votes']+k['data']['neg_votes'])
-        suggestions=l_obj
+         suggestions=l_obj
+        else:
+        	suggestions=[]
         content=str(l_obj)
 
         return render_template(
