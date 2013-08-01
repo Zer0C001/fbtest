@@ -185,6 +185,10 @@ def index():
         categories=fb_call('app/objects/'+FBNS+':category',args={'access_token': app_access_token})
         num_cat=len(categories['data'])
         content=str(categories)+'   '+str(num_cat)
+        if num_cat==0:
+        	init_cat=fb_call('app/objects/'+FBNS+':category',args={'access_token': app_access_token,,'method':'POST', 'object': "{'title':'Uncategorized'}")
+        	content+='   '+str(init_cat)
+
 
         return render_template(
             'index.html', app_id=FB_APP_ID, token=access_token, app=fb_app,
