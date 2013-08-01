@@ -197,6 +197,7 @@ def index():
          	l_obj.reverse()
          elif sort=='votes':
          	l_obj.sort(key=lambda k: k['data']['pos_votes']+k['data']['neg_votes'])
+        suggestions=l_obj
         content=str(l_obj)
 
         return render_template(
@@ -205,7 +206,7 @@ def index():
             channel_url=channel_url, name=FB_APP_NAME+' '+FBNS+'  2',content=content)
     else:
         permission_list = ",".join(app.config['FBAPI_SCOPE']) 
-        return render_template('login.html', app_id=FB_APP_ID, token=access_token, url=request.url, channel_url=channel_url, name=FB_APP_NAME, permission_list=permission_list)
+        return render_template('login.html', app_id=FB_APP_ID, token=access_token, url=request.url, channel_url=channel_url, name=FB_APP_NAME, suggestions=suggestions , permission_list=permission_list)
 
 @app.route('/channel.html', methods=['GET', 'POST'])
 def get_channel():
