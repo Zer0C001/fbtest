@@ -233,11 +233,11 @@ def suggestion_new():
 		perm=fb_call('me/permissions',args={'access_token': access_token})
 		me=fb_call('me',args={'access_token': access_token,'fields':'id'})
 		# facebook object suggestion required fields ( og:title:'<the suggestion text>', creator:'<int:me.id>',pos_votes:<int>, neg_votes:<int>)
-		fbc=fb_call('app/objects/'+FBNS+':test',args={'access_token': app_access_token,'method':'POST', 'object': "{'title':''}" })
+		fbc=fb_call('app/objects/'+FBNS+':suggestion',args={'access_token': app_access_token,'method':'POST', 'object': "{'title':'"+content+"','creator':"+str(me['id'])+",'pos_votes':0,'neg_votes':0}" })
 		#facebook object user_suggestion required fields ( og:title:'<empty string>', suggestion_id:<int> )
-		fbc1=fb_call('me/objects/'+FBNS+':test',args={'access_token': access_token,'method':'POST', 'object': "{'title':'"+fbc['id']+"'}" })
+		fbc1=fb_call('me/objects/'+FBNS+':user_suggestion',args={'access_token': access_token,'method':'POST', 'object': "{'title':'','suggestion_id':"+fbc['id']+"}" })
 		l_obj=fb_call('app/objects/'+FBNS+':test',args={'access_token': app_access_token,'fields':'id,created_time'})
-		return "save suggestion: <Br>"+content+"<br>"+str(fbc)+"<br>"+str(fbc1)+'<br>'+str(me['id'])+'<br>perms:<br>'+str(perm)+'<br>'+str(l_obj)+channel_url
+		return "save suggestion: <Br>"+content+"<br>"+str(fbc)+"<br>"+str(fbc1)+'<br>'+str(me['id'])+'<br>perms:<br>'+str(perm)+'<br><br>'+str(l_obj)
 	
 @app.route('/suggestion/<int:suggestion_id>', methods=['GET', 'POST'])
 def suggestion_show(suggestion_id):
