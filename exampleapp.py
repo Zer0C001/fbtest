@@ -189,7 +189,7 @@ def index():
         	init_cat=fb_call('app/objects/'+FBNS+':category',args={'access_token': app_access_token,'method':'POST', 'object': "{'title':'Uncategorized'}"})
         	#content+='   '+str(init_cat)
         	l_obj=fb_call('app/objects/'+FBNS+':suggestion',args={'access_token': app_access_token,'fields':'id,created_time,pos_votes,neg_votes,category_id'})
-        	content=str(l_obj)
+        	content=str(l_obj)+'x'
 
         return render_template(
             'index.html', app_id=FB_APP_ID, token=access_token, app=fb_app,
