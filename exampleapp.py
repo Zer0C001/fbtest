@@ -190,6 +190,7 @@ def index():
         	#content+='   '+str(init_cat)
         l_obj=fb_call('app/objects/'+FBNS+':suggestion',args={'access_token': app_access_token,'fields':'id,created_time,data'})#,pos_votes,neg_votes,category_id'})
         sort='votes'
+        suggestions=[]
         if l_obj.has_key('data'):
         	l_obj=l_obj['data']
         	if sort=='date':
@@ -198,8 +199,6 @@ def index():
         	elif sort=='votes':
         		l_obj.sort(key=lambda k: k['data']['pos_votes']+k['data']['neg_votes'])
         	suggestions=l_obj
-        else:
-        	suggestions=[]
         content=str(l_obj)
 
         return render_template(
