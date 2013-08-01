@@ -234,7 +234,7 @@ def suggestion_new():
 		me=fb_call('me',args={'access_token': access_token,'fields':'id'})
 		# facebook object suggestion required fields ( og:title:'<the suggestion text>', creator_id:'<int:me.id>',pos_votes:<int>, neg_votes:<int>)
 		if me.has_key('id'):
-		  fbc=fb_call('app/objects/'+FBNS+':suggestion',args={'access_token': app_access_token,'method':'POST', 'object': "{'title':'"+content+"','openpatest:creator_id':'"+str(me['id'])+"','openpatest:pos_votes':'0','openpatest:neg_votes':'0}" })
+		  fbc=fb_call('app/objects/'+FBNS+':suggestion',args={'access_token': app_access_token,'method':'POST', 'object': "{'title':'"+content+"','creator_id':'"+str(me['id'])+"','pos_votes':'0','neg_votes':'0}" })
 		else:
 			fbc={}
 		#facebook object user_suggestion required fields ( og:title:'<empty string>', suggestion_id:<int> )
@@ -243,7 +243,7 @@ def suggestion_new():
 		else:
 			fbc1='error saving'
 		l_obj=fb_call('app/objects/'+FBNS+':test',args={'access_token': app_access_token,'fields':'id,created_time'})
-		return "save suggestion: <Br>"+content+"<br>"+str(fbc)+"<br>"+str(fbc1)+'<br>'+str(me['id'])+'<br>perms:<br>'+str(perm)+'<br><br>'+str(l_obj)
+		return "save suggestion: <Br>"+content+"<br>"+str(fbc)+"<br>"+str(fbc1)+'<br>userid: '+str(me['id'])+'<br>perms:<br>'+str(perm)+'<br><br>'+str(l_obj)
 	
 @app.route('/suggestion/<int:suggestion_id>', methods=['GET', 'POST'])
 def suggestion_show(suggestion_id):
