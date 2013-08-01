@@ -193,10 +193,10 @@ def index():
         if l_obj.has_key('data'):
         	l_obj=l_obj['data']
         	if sort=='date':
-         	l_obj.sort(key=lambda k: k['created_time'])
-         	l_obj.reverse()
-         elif sort=='votes':
-         	l_obj.sort(key=lambda k: k['data']['pos_votes']+k['data']['neg_votes'])
+        		l_obj.sort(key=lambda k: k['created_time'])
+        		l_obj.reverse()
+        	elif sort=='votes':
+        		l_obj.sort(key=lambda k: k['data']['pos_votes']+k['data']['neg_votes'])
         suggestions=l_obj
         content=str(l_obj)
 
