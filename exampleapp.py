@@ -204,10 +204,10 @@ def index():
         return render_template(
             'index.html', app_id=FB_APP_ID, token=access_token, app=fb_app,
             me=me, url=url,
-            channel_url=channel_url, name=FB_APP_NAME+' '+FBNS+'  2',content=content)
+            channel_url=channel_url, name=FB_APP_NAME+' '+FBNS+'  2',suggestions=suggestions ,content=content)
     else:
         permission_list = ",".join(app.config['FBAPI_SCOPE']) 
-        return render_template('login.html', app_id=FB_APP_ID, token=access_token, url=request.url, channel_url=channel_url, name=FB_APP_NAME, suggestions=suggestions , permission_list=permission_list)
+        return render_template('login.html', app_id=FB_APP_ID, token=access_token, url=request.url, channel_url=channel_url, name=FB_APP_NAME,  permission_list=permission_list)
 
 @app.route('/channel.html', methods=['GET', 'POST'])
 def get_channel():
