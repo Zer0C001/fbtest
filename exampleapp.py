@@ -190,7 +190,7 @@ def index():
         	#content+='   '+str(init_cat)
         l_obj=fb_call('app/objects/'+FBNS+':suggestion',args={'access_token': app_access_token,'fields':'id,created_time'})#,pos_votes,neg_votes,category_id'})
         l_obj=l_obj['data']
-        l_obj=sorted(l_obj,lambda k: k['created_time'])
+        l_obj=sorted(l_obj,key=lambda k: k['created_time'])
         l_obj.reverse()
         content=str(l_obj)
 
