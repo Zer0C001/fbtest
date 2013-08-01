@@ -223,19 +223,21 @@ def suggestion_new():
 	if request.method=="GET":
 	   return render_template('suggestion_new.html')
 	elif request.method=="POST":
-		import datetime
+		#import datetime
+		#datetimestr=str(datetime.datetime.now())
 		access_token =  get_token()
 		app_access_token=fbapi_get_application_access_token(FB_APP_ID)
 		channel_url = url_for('get_channel', _external=True)
 		channel_url = channel_url.replace('http:', '').replace('https:', '') 
 		content=request.form['content']
 		perm=fb_call('me/permissions',args={'access_token': access_token})
-		datetimestr=str(datetime.datetime.now())
 		me=fb_call('me',args={'access_token': access_token,'fields':'id'})
-		# facebook object suggestion ( og:title:'<the suggestion text>', creator:'<int:me.id>',pos_votes:<int>, neg_votes:<int>)
+		# facebook object suggestion required fields ( og:title:'<the suggestion text>', creator:'<int:me.id>',pos_votes:<int>, neg_votes:<int>)
 		fbc=fb_call('app/objects/'+fbns+':test',args={'access_token': app_access_token,'method':'POST', 'object': "{'title':'t'}" })
+		#facebook object user_suggestion required fields ( og:title:'<empty string>', suggestion_id:<int> )
+		fbc1=fb_call('me/objects/'+fbns+':test',args={'access_token': access_token,'method':'POST', 'object': "{'title':'t'}" })
 		l_obj=fb_call('app/objects/'+fbns+':test',args={'access_token': app_access_token,'fields':'id,created_time'})
-		return "save suggestion: <Br>"+content+datetimestr+"<br>"+str(fbc)+'<br>'+str(me['id'])+"<br>"+'app/objects/'+fbns+':test'+'<br>perms:<br>'+str(perm)+'<br>'+str(FB_APP_ID)+'<br>'+str(app_access_token)+get_home()+'<br><br>'+str(l_obj)
+		return "save suggestion: <Br>"+content+"<br>"+str(fbc)+"<br>"+str(fbc1)+'<br>'+str(me['id'])+'<br>perms:<br>'+str(perm)+'<br>'+str(l_obj)+channel_url
 	
 @app.route('/suggestion/<int:suggestion_id>', methods=['GET', 'POST'])
 def suggestion_show(suggestion_id):
