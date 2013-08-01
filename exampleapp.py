@@ -180,7 +180,10 @@ def index():
 
         redir = get_home() + 'close/'
         url = request.url
-        content='x'
+        
+        app_access_token=fbapi_get_application_access_token(FB_APP_ID)
+        categories=fb_call('app/objects/'+FBNS+':category',args={'access_token': access_token})
+        content=str(categories)
 
         return render_template(
             'index.html', app_id=FB_APP_ID, token=access_token, app=fb_app,
