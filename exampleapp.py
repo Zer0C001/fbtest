@@ -233,7 +233,7 @@ def suggestion_new():
 		perm=fb_call('me/permissions',args={'access_token': access_token})
 		me=fb_call('me',args={'access_token': access_token,'fields':'id'})
 		# facebook object suggestion required fields ( og:title:'<the suggestion text>', creator:'<int:me.id>',pos_votes:<int>, neg_votes:<int>)
-		fbc=fb_call('app/objects/'+fbns+':test',args={'access_token': app_access_token,'method':'POST', 'object': "{'title':'t'}" })
+		fbc=fb_call('app/objects/'+fbns+':test',args={'access_token': app_access_token,'method':'POST', 'object': "{'title':''}" })
 		#facebook object user_suggestion required fields ( og:title:'<empty string>', suggestion_id:<int> )
 		fbc1=fb_call('me/objects/'+fbns+':test',args={'access_token': access_token,'method':'POST', 'object': "{'title':'"+fbc['id']+"'}" })
 		l_obj=fb_call('app/objects/'+fbns+':test',args={'access_token': app_access_token,'fields':'id,created_time'})
@@ -241,7 +241,7 @@ def suggestion_new():
 	
 @app.route('/suggestion/<int:suggestion_id>', methods=['GET', 'POST'])
 def suggestion_show(suggestion_id):
-	return render_template('suggestion_show.html',,content='tst')
+	return render_template('suggestion_show.html',content='tst')
 
 
 
