@@ -235,7 +235,7 @@ def suggestion_new():
 		# facebook object suggestion required fields ( og:title:'<the suggestion text>', creator:'<int:me.id>',pos_votes:<int>, neg_votes:<int>)
 		fbc=fb_call('app/objects/'+fbns+':test',args={'access_token': app_access_token,'method':'POST', 'object': "{'title':'t'}" })
 		#facebook object user_suggestion required fields ( og:title:'<empty string>', suggestion_id:<int> )
-		fbc1=fb_call('me/objects/'+fbns+':test',args={'access_token': access_token,'method':'POST', 'object': "{'title':'t'}" })
+		fbc1=fb_call('me/objects/'+fbns+':test',args={'access_token': access_token,'method':'POST', 'object': "{'title':'"+fbc['id']+"'}" })
 		l_obj=fb_call('app/objects/'+fbns+':test',args={'access_token': app_access_token,'fields':'id,created_time'})
 		return "save suggestion: <Br>"+content+"<br>"+str(fbc)+"<br>"+str(fbc1)+'<br>'+str(me['id'])+'<br>perms:<br>'+str(perm)+'<br>'+str(l_obj)+channel_url
 	
