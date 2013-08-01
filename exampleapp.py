@@ -204,12 +204,12 @@ def index():
             me=me, POST_TO_WALL=POST_TO_WALL, SEND_TO=SEND_TO, url=url,
             channel_url=channel_url, name=FB_APP_NAME)
     else:
-	permission_list = ",".join(app.config['FBAPI_SCOPE']) 
+        permission_list = ",".join(app.config['FBAPI_SCOPE']) 
         return render_template('login.html', app_id=FB_APP_ID, token=access_token, url=request.url, channel_url=channel_url, name=FB_APP_NAME, permission_list=permission_list)
 
 @app.route('/channel.html', methods=['GET', 'POST'])
 def get_channel():
-    return render_template('channel.html')
+    return render_template('channel.html',content='test')
 
 
 @app.route('/close/', methods=['GET', 'POST'])
@@ -241,7 +241,7 @@ def suggestion_new():
 	
 @app.route('/suggestion/<int:suggestion_id>', methods=['GET', 'POST'])
 def suggestion_show(suggestion_id):
-	return render_template('suggestion_show.html')
+	return render_template('suggestion_show.html',content=)
 
 
 
