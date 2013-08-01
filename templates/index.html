@@ -21,5 +21,9 @@
  <div>
 	{% block content %}
 	{{ content }}
+	<br>
+	{% # for suggestion in suggestions %}
+		<br> {{ suggestion.id }}
+	{% endfor %}
 	{% endblock%}
 </div>
