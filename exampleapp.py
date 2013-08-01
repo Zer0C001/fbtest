@@ -78,12 +78,14 @@ def fbapi_auth(code):
 
 
 def fbapi_get_application_access_token(id):
-    token = fbapi_get_string(
-        path=u"/oauth/access_token",
-        params=dict(grant_type=u'client_credentials', client_id=id,
-                    client_secret=app.config['FB_APP_SECRET'],redirect_uri='none'),
-        domain=u'graph')
-	
+	 token=requests.get('https://graph.facebook.com/oauth/access_token?grant_type=client_credentials&client_id='+id+'&client_secret='+FB_APP_SECRET)
+	 token=token.content
+	 token=app_access_token.split('=')[-1]
+    #token = fbapi_get_string(
+    #    path=u"/oauth/access_token",
+    #    params=dict(grant_type=u'client_credentials', client_id=id,
+    #                client_secret=app.config['FB_APP_SECRET'],redirect_uri='none'),
+    #    domain=u'graph')
     token = token.split('=')[-1]
     if not str(id) in token:
         print 'Token mismatch: %s not in %s' % (id, token)
@@ -228,16 +230,13 @@ def suggestion_new():
 	elif request.method=="POST":
 		import datetime
 		access_token =  get_token()
-		#access_token=fbapi_get_application_access_token(FB_APP_ID)
+		app_access_token=fbapi_get_application_access_token(FB_APP_ID)
 		channel_url = url_for('get_channel', _external=True)
 		channel_url = channel_url.replace('http:', '').replace('https:', '') 
 		content=request.form['content']
 		perm=fb_call('me/permissions',args={'access_token': access_token})
 		datetimestr=str(datetime.datetime.now())
 		me=fb_call('me',args={'access_token': access_token})
-		app_access_token=requests.get('https://graph.facebook.com/oauth/access_token?grant_type=client_credentials&client_id='+FB_APP_ID+'&client_secret='+FB_APP_SECRET)
-		app_access_token=app_access_token.content
-		app_access_token=app_access_token.split('=')[-1]
 		fbc=fb_call('app/objects/'+fbns+':test',args={'access_token': app_access_token,'method':'POST', 'object': "{'title':'t'}" })               #fbapi_get_string('/app/objects/'+fbns+':suggestion', params={"object":"{\"category\":\"none\",\"datetime\":\""+datetimestr+"\",\"content\":\""+content+"\"}"}, access_token=token)
 		return "save suggestion: <Br>"+content+datetimestr+"<br>"+str(fbc)+'<br>'+str(me)+"<br>"+'app/objects/'+fbns+':test'+'<br>perms:<br>'+str(perm)+'<br>'+str(FB_APP_ID)+'<br>'+str(app_access_token)+get_home()
 	
