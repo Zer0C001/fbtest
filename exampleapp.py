@@ -199,10 +199,9 @@ def index():
         url = request.url
 
         return render_template(
-            'index.html', app_id=FB_APP_ID, token=access_token, likes=likes,
-            friends=friends, photos=photos, app_friends=app_friends, app=fb_app,
-            me=me, POST_TO_WALL=POST_TO_WALL, SEND_TO=SEND_TO, url=url,
-            channel_url=channel_url, name=FB_APP_NAME+' '+FBNS+'  2')
+            'index.html', app_id=FB_APP_ID, token=access_token, app=fb_app,
+            me=me, url=url,
+            channel_url=channel_url, name=FB_APP_NAME+' '+FBNS+'  2',content='')
     else:
         permission_list = ",".join(app.config['FBAPI_SCOPE']) 
         return render_template('login.html', app_id=FB_APP_ID, token=access_token, url=request.url, channel_url=channel_url, name=FB_APP_NAME, permission_list=permission_list)
