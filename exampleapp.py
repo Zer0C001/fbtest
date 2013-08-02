@@ -236,6 +236,8 @@ def suggestion_new():
 		#import datetime
 		#datetimestr=str(datetime.datetime.now())
 		access_token =  get_token()
+		if not access_token :
+			access_token =  get_token()
 		app_access_token=fbapi_get_application_access_token(FB_APP_ID)
 		channel_url = url_for('get_channel', _external=True)
 		channel_url = channel_url.replace('http:', '').replace('https:', '') 
@@ -263,6 +265,9 @@ def suggestion_new():
 	
 @app.route('/suggestion/<int:suggestion_id>', methods=['GET', 'POST'])
 def suggestion_show(suggestion_id):
+	access_token =  get_token()
+	if not access_token :
+		access_token =  get_token()
 	app_access_token=fbapi_get_application_access_token(FB_APP_ID)
 	suggestion=fb_call(str(suggestion_id),args={'access_token': app_access_token})
 	return render_template('suggestion_show.html',content=str(suggestion)+str(request.form))
