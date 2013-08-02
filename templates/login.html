@@ -1,7 +1,12 @@
 {% extends "base.html" %}
 
 {% block topbar %}
-
+	<script  type="text/javascript">
+		FB.getLoginStatus(function(response) {
+	  		if (response.status === 'connected') {
+	  		 window.location = window.location;
+  			}		
+	</script>
 
   <div id="fb-root"></div>
   <h1>Welcome</h1>
