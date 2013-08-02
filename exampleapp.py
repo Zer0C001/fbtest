@@ -202,7 +202,7 @@ def index():
         		suggestions.sort(key=lambda k: k['created_time'])
         		suggestions.reverse()
         	elif sort=='votes':
-        		suggestions.sort(key=lambda k: k['pos_votes']+k['neg_votes'])
+        		suggestions.sort(key=lambda k: k['data']['pos_votes']+k['data']['neg_votes'])
         #	suggestions=l_obj
         content=str(suggestions)+str(request.args)
 
