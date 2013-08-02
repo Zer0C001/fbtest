@@ -195,9 +195,9 @@ def index():
          sort='date'
         if suggestions.has_key('data'):
         	suggestions=suggestions['data']
-        	for i in range(0,len(suggestions)):
-        		suggestions[i].update(suggestions[i]['data'])
-        		del suggestions[i]['data']
+        	#for i in range(0,len(suggestions)):
+        	#	suggestions[i].update(suggestions[i]['data'])
+        	#	del suggestions[i]['data']
         	if sort=='date':
         		suggestions.sort(key=lambda k: k['created_time'])
         		suggestions.reverse()
