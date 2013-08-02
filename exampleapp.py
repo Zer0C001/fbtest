@@ -205,11 +205,13 @@ def index():
         		suggestions.sort(key=lambda k: k['data']['pos_votes']+k['data']['neg_votes'])
         #	suggestions=l_obj
         content=str(suggestions)+str(request.args)#+' '+str(request.form)+str(request.cookies)
-
+        disp_suggestions=[]
+        for i in range(0,10):
+	  disp_suggestions+=fb_call(suggestions[i]['id'],args={'access_token': app_access_token})
         return render_template(
             'index.html', app_id=FB_APP_ID, token=access_token, app=fb_app,
             me=me, url=url,
-            channel_url=channel_url, name=FB_APP_NAME+' '+FBNS+'  2',suggestions=suggestions ,content=content)
+            channel_url=channel_url, name=FB_APP_NAME+' '+FBNS+'  2',suggestions=disp_suggestions ,content=content)
     else:
         permission_list = ",".join(app.config['FBAPI_SCOPE']) 
         dbg=str(request.cookies)
