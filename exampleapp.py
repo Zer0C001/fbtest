@@ -192,10 +192,7 @@ def index():
         	init_cat=fb_call('app/objects/'+FBNS+':category',args={'access_token': app_access_token,'method':'POST', 'object': "{'title':'Uncategorized'}"})
         	#content+='   '+str(init_cat)
         suggestions=fb_call('app/objects/'+FBNS+':suggestion',args={'access_token': app_access_token,'fields':'id,created_time,data'})#,pos_votes,neg_votes,category_id'})
-        if request.args.has_key('sort'):
-        	sort=request.args['sort']
-        else:
-         sort='votes'
+        sort=request.args.get('sort','votes')
         if suggestions.has_key('data'):
         	suggestions=suggestions['data']
         	for i in range(0,len(suggestions)):
