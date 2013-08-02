@@ -206,7 +206,8 @@ def index():
         #	suggestions=l_obj
         disp_suggestions=[]
         for i in range(0,min(10,len(suggestions))):
-	  disp_suggestions+=fb_call(suggestions[i]['id'],args={'access_token': app_access_token})
+	  disp_sug=fb_call(suggestions[i]['id'],args={'access_token': app_access_token})
+	  disp_suggestions+=[disp_sug]
 	content=str(disp_suggestions)+str(request.args)#+' '+str(request.form)+str(request.cookies)
         return render_template(
             'index.html', app_id=FB_APP_ID, token=access_token, app=fb_app,
