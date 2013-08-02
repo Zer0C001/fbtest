@@ -188,21 +188,23 @@ def index():
         if num_cat==0:
         	init_cat=fb_call('app/objects/'+FBNS+':category',args={'access_token': app_access_token,'method':'POST', 'object': "{'title':'Uncategorized'}"})
         	#content+='   '+str(init_cat)
-        l_obj=fb_call('app/objects/'+FBNS+':suggestion',args={'access_token': app_access_token,'fields':'id,created_time,data'})#,pos_votes,neg_votes,category_id'})
+        suggestions=fb_call('app/objects/'+FBNS+':suggestion',args={'access_token': app_access_token,'fields':'id,created_time,data'})#,pos_votes,neg_votes,category_id'})
         if request.args.has_key('sort'):
         	sort=request.args['sort']
         else:
          sort='date'
-        suggestions=[]
-        if l_obj.has_key('data'):
-        	l_obj=l_obj['data']
+        if suggestions.has_key('data'):
+        	suggestions=suggestions['data']
+        	for i in range(0,len(suggestions)):
+        		suggestions[i].update(suggestions[i]['data'])
+        		del suggestions[i]['data']
         	if sort=='date':
-        		l_obj.sort(key=lambda k: k['created_time'])
-        		l_obj.reverse()
+        		suggestions.sort(key=lambda k: k['created_time'])
+        		suggestions.reverse()
         	elif sort=='votes':
-        		l_obj.sort(key=lambda k: k['data']['pos_votes']+k['data']['neg_votes'])
-        	suggestions=l_obj
-        content=str(l_obj)+str(request.args)
+        		suggestions.sort(key=lambda k: k['pos_votes']+k['neg_votes'])
+        #	suggestions=l_obj
+        content=str(suggestions)+str(request.args)
 
         return render_template(
             'index.html', app_id=FB_APP_ID, token=access_token, app=fb_app,
