@@ -192,7 +192,7 @@ def index():
         if request.form.has_key('sort'):
         	sort=request.form['sort']
         else:
-         sort='votes'
+         sort='date'
         suggestions=[]
         if l_obj.has_key('data'):
         	l_obj=l_obj['data']
@@ -202,7 +202,7 @@ def index():
         	elif sort=='votes':
         		l_obj.sort(key=lambda k: k['data']['pos_votes']+k['data']['neg_votes'])
         	suggestions=l_obj
-        content=str(l_obj)
+        content=str(l_obj)+str(request)
 
         return render_template(
             'index.html', app_id=FB_APP_ID, token=access_token, app=fb_app,
