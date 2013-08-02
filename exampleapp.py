@@ -262,7 +262,7 @@ def suggestion_new():
 def suggestion_show(suggestion_id):
 	app_access_token=fbapi_get_application_access_token(FB_APP_ID)
 	suggestion=fb_call(str(suggestion_id),args={'access_token': app_access_token})
-	return render_template('suggestion_show.html',content=str(suggestion))
+	return render_template('suggestion_show.html',content=str(suggestion)+str(request.form))
 
 
 
