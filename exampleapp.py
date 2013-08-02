@@ -189,8 +189,8 @@ def index():
         	init_cat=fb_call('app/objects/'+FBNS+':category',args={'access_token': app_access_token,'method':'POST', 'object': "{'title':'Uncategorized'}"})
         	#content+='   '+str(init_cat)
         l_obj=fb_call('app/objects/'+FBNS+':suggestion',args={'access_token': app_access_token,'fields':'id,created_time,data'})#,pos_votes,neg_votes,category_id'})
-        if request.form.has_key('sort'):
-        	sort=request.form['sort']
+        if request.args.has_key('sort'):
+        	sort=request.args['sort']
         else:
          sort='date'
         suggestions=[]
@@ -202,7 +202,7 @@ def index():
         	elif sort=='votes':
         		l_obj.sort(key=lambda k: k['data']['pos_votes']+k['data']['neg_votes'])
         	suggestions=l_obj
-        content=str(l_obj)+str(request)
+        content=str(l_obj)+str(request.args)
 
         return render_template(
             'index.html', app_id=FB_APP_ID, token=access_token, app=fb_app,
