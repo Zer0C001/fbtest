@@ -9,18 +9,20 @@
   <div>
     Welcome, <strong>{{me.name}}</strong><br>
       <a href="/suggestion/new"> New suggestion</a><br>
-     <h1>suggestions:</h1>
+     suggestions:
   </div>
 
 {% endblock %}
-<p>
- <div>
-	{% block content %}
+{% block content %}
+  <p>
+    <div>
+
 	{{ content }}
 	<br>
 	{% for suggestion in suggestions %}
 		<br> <a href="/suggestion/{{ suggestion.id }}">{{ suggestion.title }}</a><br>
 	{% endfor %}
-	{% endblock%}
-</div>
-<p>
+
+    </div>
+  <p>
+{% endblock%}
