@@ -196,7 +196,7 @@ def index():
         if suggestions.has_key('data'):
         	suggestions=suggestions['data']
         	for i in range(0,len(suggestions)):
-        		if not suggestion[i].has_key['data']:
+        		if not suggestions[i].has_key['data']:
         		  del suggestions[i]
         	if sort=='date':
         		suggestions.sort(key=lambda k: k['created_time'])
