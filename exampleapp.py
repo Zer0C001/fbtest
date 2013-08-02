@@ -204,7 +204,7 @@ def index():
         	elif sort=='votes':
         		suggestions.sort(key=lambda k: k['data']['pos_votes']+k['data']['neg_votes'])
         #	suggestions=l_obj
-        content=str(suggestions)+str(request.args)+' '+str(request.form)+str(request.cookies)
+        content=str(suggestions)+str(request.args)#+' '+str(request.form)+str(request.cookies)
 
         return render_template(
             'index.html', app_id=FB_APP_ID, token=access_token, app=fb_app,
