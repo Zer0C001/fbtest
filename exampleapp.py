@@ -187,7 +187,7 @@ def index():
         app_access_token=fbapi_get_application_access_token(FB_APP_ID)
         categories=fb_call('app/objects/'+FBNS+':category',args={'access_token': app_access_token})
         num_cat=len(categories['data'])
-        content=''#str(categories)+'   '+str(num_cat)
+        content=''
         if num_cat==0:
         	init_cat=fb_call('app/objects/'+FBNS+':category',args={'access_token': app_access_token,'method':'POST', 'object': "{'title':'Uncategorized'}"})
         	#content+='   '+str(init_cat)
