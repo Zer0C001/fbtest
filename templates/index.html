@@ -21,7 +21,7 @@
 	{{ content }}
 	<br>
 	{% for suggestion in suggestions %}
-		<br> <a href="/suggestion/{{ suggestion.id }}">{{ suggestion.id }}</a>
+		<br> <a href="/suggestion/{{ suggestion.id }}">{{ suggestion.title }}</a><br>
 	{% endfor %}
 	{% endblock%}
 </div>
