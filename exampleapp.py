@@ -256,7 +256,7 @@ def suggestion_new():
 		else:
 			fbc1='error saving'
 
-		return "save suggestion: <Br>"+content+"<br>"+str(fbc)+"<br>"+str(fbc1)+'<br>userid: '+str(me['id'])+'<br>perms:<br>'+str(perm)+'<br><br>'
+		return "save suggestion: <Br>"+content+"<br>"+str(fbc)+"<br>"+str(fbc1)+'<br>userid: '+str(me['id'])+'<br>perms:<br>'+str(perm)+'<br><br>'+str(request.form)
 	
 @app.route('/suggestion/<int:suggestion_id>', methods=['GET', 'POST'])
 def suggestion_show(suggestion_id):
