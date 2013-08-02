@@ -9,18 +9,17 @@
   <div>
     Welcome, <strong>{{me.name}}</strong><br>
       <a href="/suggestion/new"> New suggestion</a><br>
-     suggestions:
   </div>
 
 {% endblock %}
 {% block content %}
   <p>
     <div>
-
+	suggestions:
 	{{ content }}
 	<br>
 	{% for suggestion in suggestions %}
-		<br> <a href="/suggestion/{{ suggestion.id }}">{{ suggestion.title }}</a><br>
+	<div>	<br> <a href="/suggestion/{{ suggestion.id }}">{{ suggestion.title }}</a><br></div>
 	{% endfor %}
 
     </div>
