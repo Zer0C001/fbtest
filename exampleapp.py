@@ -232,7 +232,11 @@ def close():
 @app.route('/suggestion/new', methods=['GET', 'POST'])
 def suggestion_new():
 	if request.method=="GET":
-	   return render_template('suggestion_new.html')
+	  access_token =  get_token()
+	  if not access_token :
+	    access_token =  get_token()
+	  me = fb_call('me', args={'access_token': access_token})
+	  return render_template('suggestion_new.html',me=me)
 	elif request.method=="POST":
 		#import datetime
 		#datetimestr=str(datetime.datetime.now())
@@ -240,6 +244,7 @@ def suggestion_new():
 		if not access_token :
 			access_token =  get_token()
 		app_access_token=fbapi_get_application_access_token(FB_APP_ID)
+		me = fb_call('me', args={'access_token': access_token})
 		channel_url = url_for('get_channel', _external=True)
 		channel_url = channel_url.replace('http:', '').replace('https:', '') 
 		content=request.form['content']
@@ -269,9 +274,10 @@ def suggestion_show(suggestion_id):
 	access_token =  get_token()
 	if not access_token :
 		access_token =  get_token()
+	me = fb_call('me', args={'access_token': access_token})
 	app_access_token=fbapi_get_application_access_token(FB_APP_ID)
 	suggestion=fb_call(str(suggestion_id),args={'access_token': app_access_token})
-	return render_template('suggestion_show.html',content=str(suggestion)+str(request.form))
+	return render_template('suggestion_show.html',me=me,content=str(suggestion)+str(request.form))
 
 
 

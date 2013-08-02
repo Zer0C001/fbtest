@@ -129,18 +129,16 @@
 
     <header>
       {% block topbar %}
+      Welcome, <strong>{{me.name}}</strong><br>
 			<a href="/">Home</a>
       {% endblock %}
+    
     </header>
-    <!--
-    <section id="get-started">
-      <p>Welcome to your Facebook app, base.html running on
-      <span>heroku</span>!</p>
-      <a class="button" href="https://devcenter.heroku.com/articles/facebook">Learn How to Edit This App</a>
-    </section> -->
     <section class="clearfix" id="content">
+
     {% block content%}
     {% endblock %}
+    
     </section>
     <section>
     </section>
