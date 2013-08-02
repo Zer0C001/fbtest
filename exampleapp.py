@@ -195,14 +195,14 @@ def index():
          sort='date'
         if suggestions.has_key('data'):
         	suggestions=suggestions['data']
-        	#for i in range(0,len(suggestions)):
-        	#	suggestions[i].update(suggestions[i]['data'])
-        	#	del suggestions[i]['data']
+        	for i in range(0,len(suggestions)):
+        		if not suggestion[i].has_key['data']:
+        		  del suggestions[i]
         	if sort=='date':
         		suggestions.sort(key=lambda k: k['created_time'])
         		suggestions.reverse()
         	elif sort=='votes':
-        		suggestions.sort(key=lambda k: if k.has_key('data'): k['data']['pos_votes']+k['data']['neg_votes'])
+        		suggestions.sort(key=lambda k: k['data']['pos_votes']+k['data']['neg_votes'])
         #	suggestions=l_obj
         content=str(suggestions)+str(request.args)
 
