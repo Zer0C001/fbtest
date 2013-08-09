@@ -11,6 +11,9 @@ from base64 import urlsafe_b64decode, urlsafe_b64encode
 
 import requests
 from flask import Flask, request, redirect, render_template, url_for
+import psycopg2
+import urlparse
+
 
 FB_APP_ID = os.environ.get('FACEBOOK_APP_ID')
 requests = requests.session()
@@ -258,7 +261,7 @@ def suggestion_new():
 		me=fb_call('me',args={'access_token': access_token,'fields':'id'})
 		# facebook object suggestion required fields ( og:title:'<the suggestion text>', creator_id:'<int:me.id>',pos_votes:<int>, neg_votes:<int>)
 		if me.has_key('id'):
-		  fbc=fb_call('app/objects/'+FBNS+':suggestion',args={'access_token': app_access_token,'method':'POST', 'object': "{'title':'"+content+"','data':{'creator_id':'"+str(me['id'])+"','pos_votes':'0','neg_votes':'0','category_id':'"+category_id+"'}}" })
+		  fbc=fb_call('app/objects/'+FBNS+':suggestion',args={'access_token': app_access_token,'method':'POST', 'object': "{'title':'"+content+"','data':{'creator_id':'"+str(me['id'])+"','pos_votes':'0','neg_votes':'0','category_id':'"+category_id+"','closed':'False'}}" })
 		else:
 			fbc={}
 		#facebook object user_suggestion required fields ( og:title:'<empty string>', suggestion_id:<int> )
