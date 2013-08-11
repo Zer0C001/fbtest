@@ -246,37 +246,36 @@ def get_token():
 @app.route('/', methods=['GET', 'POST'])
 def index():
     # print get_home()
-
-
-    access_token = get_token()
-    # try twice ?
-    if not access_token:
+    tokens=get_tokens()
+    if not tokens:
     	access_token = get_token()
-    tokens=get_tokens(short_uat=access_token)
+    	# try twice ?
+    	if not access_token:
+    		access_token = get_token()
+    	tokens=get_tokens(short_uat=access_token)
     print tokens
 
     channel_url = url_for('get_channel', _external=True)
     channel_url = channel_url.replace('http:', '').replace('https:', '')
 
-    if access_token:
+    if tokens:
 
-        me = fb_call('me', args={'access_token': access_token})
-        fb_app = fb_call(FB_APP_ID, args={'access_token': access_token})
+        me = fb_call('me', args={'access_token': tokens['user_access_token']})
+        fb_app = fb_call(FB_APP_ID, args={'access_token': tokens['user_access_token']})
         likes =  fb_call('me/likes',
-                        args={'access_token': access_token, 'limit': 4})
+                        args={'access_token': tokens['user_access_token'], 'limit': 4})
 
         redir = get_home() + 'close/'
         url = request.url
         
-        app_access_token=fbapi_get_application_access_token(FB_APP_ID)
         	
-        categories=fb_call('app/objects/'+FBNS+':category',args={'access_token': app_access_token})
+        categories=fb_call('app/objects/'+FBNS+':category',args={'access_token': tokens['app_access_token']})
         num_cat=len(categories['data'])
         content=''
         if num_cat==0:
-        	init_cat=fb_call('app/objects/'+FBNS+':category',args={'access_token': app_access_token,'method':'POST', 'object': "{'title':'Uncategorized'}"})
+        	init_cat=fb_call('app/objects/'+FBNS+':category',args={'access_token': tokens['app_access_token'],'method':'POST', 'object': "{'title':'Uncategorized'}"})
         	#content+='   '+str(init_cat)
-        suggestions=fb_call('app/objects/'+FBNS+':suggestion',args={'access_token': app_access_token,'fields':'id,created_time,data'})#,pos_votes,neg_votes,category_id'})
+        suggestions=fb_call('app/objects/'+FBNS+':suggestion',args={'access_token': tokens['app_access_token'],'fields':'id,created_time,data'})#,pos_votes,neg_votes,category_id'})
         sort=request.args.get('sort','votes')
         if suggestions.has_key('data'):
         	suggestions=suggestions['data']
@@ -291,18 +290,18 @@ def index():
         #	suggestions=l_obj
         disp_suggestions=[]
         for i in range(0,min(10,len(suggestions))):
-	  disp_sug=fb_call(suggestions[i]['id'],args={'access_token': app_access_token})
+	  disp_sug=fb_call(suggestions[i]['id'],args={'access_token': tokens['app_access_token']})
 	  disp_suggestions+=[disp_sug]
 	  dbg=''+str(request.args)+str(request.form)+str(request.cookies)
 	content=''#+str(disp_suggestions)+str(request.args)#+' '+str(request.form)+str(request.cookies)
         return render_template(
-            'index.html', app_id=FB_APP_ID, token=access_token, app=fb_app,
+            'index.html', app_id=FB_APP_ID, app=fb_app,
             me=me, url=url,
             channel_url=channel_url, name=FB_APP_NAME+' '+FBNS+'  2',suggestions=disp_suggestions ,content=content,dbg=dbg)
     else:
         permission_list = ",".join(app.config['FBAPI_SCOPE']) 
         dbg=''+str(request.args)+str(request.form)+str(request.cookies)
-        return render_template('login.html', app_id=FB_APP_ID, token=access_token, url=request.url, channel_url=channel_url, name=FB_APP_NAME,  permission_list=permission_list,dbg=dbg)
+        return render_template('login.html', app_id=FB_APP_ID, url=request.url, channel_url=channel_url, name=FB_APP_NAME,  permission_list=permission_list,dbg=dbg)
 
 @app.route('/channel.html', methods=['GET', 'POST'])
 def get_channel():
