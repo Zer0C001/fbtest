@@ -18,13 +18,13 @@
 	<br>
 	{% for suggestion in suggestions %}
 	<div class="suggestion">	
-		<br> <a href="/suggestion/{{ suggestion.id }}"></a>{{ suggestion.title }}<br>
+		<br><div class="suggestion_text">{{ suggestion.title }}</div><a href="/suggestion/{{ suggestion.id }}">Open</a><br>
 	</div>
 	{% endfor %}
 <script language="javascript">
 $(document).ready(function() {
 
-$(".suggestion").shorten({showChars: 100});
+$(".suggestion_text").shorten({showChars: 160});
 
  });
  
