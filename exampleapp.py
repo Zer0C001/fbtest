@@ -32,7 +32,7 @@ app_secret_key =  hashlib.sha256(FB_APP_SECRET).digest()
 def get_tokens(fbtiv=False,short_uat=False):
 	if fbtiv or session.has_key('fbtiv'):
 		if not fbtiv:
-			fbtiv=session['fbtiv']
+			fbtiv=base64.urlsafe_b64decode(session['fbtiv'])
 		cipher = AES.new(app_secret_key, AES.MODE_CFB, fbtiv)
 		# get app access token
 		app_access_token=fbapi_get_application_access_token(FB_APP_ID)
@@ -41,7 +41,7 @@ def get_tokens(fbtiv=False,short_uat=False):
 		#
 		has_uat=False
 		if session.has_key('long_uat'):
-			  tmp_long_uat=cipher.decrypt(session['long_uat'])
+			  tmp_long_uat=cipher.decrypt(base64.urlsafe_b64decode(session['long_uat']))
 			  has_uat=True
 		if has_uat and (is_valid(app_access_token,tmp_long_uat)):
 			long_uat=tmp_long_uat
@@ -61,12 +61,13 @@ def get_tokens(fbtiv=False,short_uat=False):
 			else:
 				fbtiv = Random.new().read(AES.block_size)
 				cipher = AES.new(app_secret_key, AES.MODE_CFB, fbtiv)
-				session['long_uat']=cipher.encrypt(long_uat)
+				session['fbtiv']=base64.urlsafe_b64encode(fbtiv)
+				session['long_uat']=base64.urlsafe_b64encode(cipher.encrypt(long_uat))
 			#
 		return {'app_access_token':app_access_token,'user_access_token':long_uat}
 	else:
 		fbtiv = Random.new().read(AES.block_size)
-		session['fbtiv']=fbtiv
+		session['fbtiv']=base64.urlsafe_b64encode(fbtiv)
 		return get_tokens(fbtiv,short_uat)
 			
     
