@@ -314,12 +314,16 @@ def close():
 def suggestion_new():
 	if request.method=="GET":
 	  tokens=get_tokens()
+	  if not tokens:
+	  	return "Error please try again"
 	  me = fb_call('me', args={'access_token': tokens['user_access_token']})
 	  return render_template('suggestion_new.html',me=me)
 	elif request.method=="POST":
 		#import datetime
 		#datetimestr=str(datetime.datetime.now())
 		tokens=get_tokens()
+		if not tokens:
+			return "Error please try again"
 		me = fb_call('me', args={'access_token': tokens['user_access_token']})
 		channel_url = url_for('get_channel', _external=True)
 		channel_url = channel_url.replace('http:', '').replace('https:', '') 
@@ -349,6 +353,8 @@ def suggestion_new():
 @app.route('/suggestion/<int:suggestion_id>', methods=['GET', 'POST'])
 def suggestion_show(suggestion_id):
 	tokens=get_tokens()
+	if not tokens:
+		return "Error please try again"
 	me = fb_call('me', args={'access_token': tokens['user_access_token']})
 	suggestion=fb_call(str(suggestion_id),args={'access_token': tokens['app_access_token']})
 	return render_template('suggestion_show.html',me=me,content=str(suggestion)+str(request.form))
