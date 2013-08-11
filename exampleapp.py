@@ -44,11 +44,11 @@ def get_tokens(fbtiv=False,short_uat=False):
 		# get long lived user access token
 		#
 		has_uac=False
-		if session.has_key('long_uac'):
-			  tmp_long_uac=cipher.decrypt(session['long_uac'])
-			  has_uac=True
-		if has_uac and (is_valid(app_access_token,tmp_long_uac)):
-			long_uac=tmp_long_uac
+		if session.has_key('long_uat'):
+			  tmp_long_uat=cipher.decrypt(session['long_uat'])
+			  has_uat=True
+		if has_uat and (is_valid(app_access_token,tmp_long_uat)):
+			long_uat=tmp_long_uat
 		else:
 			if short_uat:
 				access_token=short_uat
@@ -59,9 +59,16 @@ def get_tokens(fbtiv=False,short_uat=False):
 					access_token = get_token()
 			if not access_token or not is_valid(app_access_token,access_token):
 				return False	
-			long_uac=fb_extend_token(access_token)
+			long_uat=fb_extend_token(access_token)
+			if not is_valid(app_access_token,long_uat):
+				return False
+			else:
+				fbtiv = Random.new().read(AES.block_size)
+				cipher = AES.new(app_secret_key, AES.MODE_CFB, fbtiv)
+				session['app_access_token']=cipher.encrypt(app_access_token)
+				session['long_uat']=cipher.encrypt(long_uat)
 			#
-		return {'app_access_token':app_access_token,'user_access_token':long_uac}
+		return {'app_access_token':app_access_token,'user_access_token':long_uat}
 	else:
 		fbtiv = Random.new().read(AES.block_size)
 		session['fbtiv']=fbtiv
@@ -84,8 +91,8 @@ def fb_extend_token(access_token):
         (key, value) = pair.split("=")
         result_dict[key] = value
    new_token=result_dict['access_token']
-   print 'extended token:'
-   print new_token
+   #print 'extended token:'
+   #print new_token
    return new_token
 
 def is_valid(app_access_token,input_token):
