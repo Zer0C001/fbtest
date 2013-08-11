@@ -78,11 +78,12 @@ def fb_extend_token(access_token):
    	access_token=access_token[0]
 	new_token=requests.get('https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id='+str(FB_APP_ID)+'&client_secret='+FB_APP_SECRET+'&fb_exchange_token='+access_token)
 	new_token=new_token.content
-   #pairs = result.split("&", 1)
-   #result_dict = {}
-   #for pair in pairs:
-   #     (key, value) = pair.split("=")
-   #     result_dict[key] = value
+   pairs = new_token.split("&", 1)
+   result_dict = {}
+   for pair in pairs:
+        (key, value) = pair.split("=")
+        result_dict[key] = value
+   new_token=result_dict['access_token']
 	print 'extended token:'
 	print new_token
 	return new_token
