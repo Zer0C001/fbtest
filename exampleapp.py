@@ -18,6 +18,11 @@ from Crypto.Cipher import AES
 from Crypto import Random
 
 
+app = Flask(__name__)
+app.config.from_object(__name__)
+app.config.from_object('conf.Config')
+
+
 FB_APP_ID = os.environ.get('FACEBOOK_APP_ID')
 requests = requests.session()
 
@@ -135,9 +140,6 @@ def fb_call(call, args=None):
 
 
 
-app = Flask(__name__)
-app.config.from_object(__name__)
-app.config.from_object('conf.Config')
 
 
 def get_home():
