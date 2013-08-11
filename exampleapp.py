@@ -29,23 +29,54 @@ app_secret_key =  hashlib.sha256(FB_APP_SECRET).hexdigest()
 
 
 
-def get_tokens():
-	if session.has_key('fbtiv'):
-		cipher = AES.new(app_secret_key, AES.MODE_CFB, session['fbtiv'])
+def get_tokens(fbtiv=False):
+	if fbtiv or session.has_key('fbtiv'):
+		if not fbtiv:
+			fbtiv=session['fbtiv']
+		cipher = AES.new(app_secret_key, AES.MODE_CFB, fbtiv)
+		# get app access token
 		if session.has_key('app_access_token'):
 			app_access_token=cipher.decrypt(session['app_access_token'])
 		else:
 			app_access_token=fbapi_get_application_access_token(FB_APP_ID)
 			session['app_access_token']=cipher.encrypt(app_access_token)
+		#
+		# get long lived user access token
+		#
+		has_uac=False
 		if session.has_key('long_uac'):
-			  long_uac=cipher.decrypt(session['long_uac'])
-			  #
-		access_token = get_token()
-		# try twice ?
-		if not access_token:
+			  tmp_long_uac=cipher.decrypt(session['long_uac'])
+			  has_uac=True
+		if has_uac and (is_valid(app_access_token,tmp_long_uac)):
+			long_uac=tmp_long_uac
+		else:
 			access_token = get_token()
+			# try twice ?
+			if not access_token:
+				access_token = get_token()
+			long_uac=fb_extend_token(access_token)
+		return {'app_access_token':app_access_token,'user_access_token':long_uac}
+	else:
+		fbtiv = Random.new().read(AES.block_size)
+		session['fbtiv']=fbtiv
+		return get_tokens(fbtiv)
+			
     
 
+def fb_extend_token(access_token):
+	params = {'grant_type':'fb_exchange_token',           
+    'client_id':FB_APP_ID,
+    'client_secret':FB_APP_SECRET,
+    'fb_exchange_token':access_token}} 
+	new_token=fbapi_get_string(path=u"/oauth/access_token?", params=params,
+                              encode_func=simple_dict_serialisation)
+   #pairs = result.split("&", 1)
+   #result_dict = {}
+   #for pair in pairs:
+   #     (key, value) = pair.split("=")
+   #     result_dict[key] = value
+	print new_token
+	return new_token
 
 def is_valid(app_access_token,input_token):
 	dbg = fb_call('debug_token', args={'access_token': app_access_token,'input_token':input_token})
@@ -198,7 +229,8 @@ def get_token():
 @app.route('/', methods=['GET', 'POST'])
 def index():
     # print get_home()
-
+    tokens=get_tokens()
+    print tokens
 
     access_token = get_token()
     # try twice ?
@@ -219,9 +251,6 @@ def index():
         url = request.url
         
         app_access_token=fbapi_get_application_access_token(FB_APP_ID)
-        
-        if is_valid(app_access_token,app_access_token):
-        	print 'ok'
         	
         categories=fb_call('app/objects/'+FBNS+':category',args={'access_token': app_access_token})
         num_cat=len(categories['data'])
