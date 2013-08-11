@@ -18,7 +18,7 @@
 	<br>
 	{% for suggestion in suggestions %}
 	<div class="suggestion">	
-		<br><div class="suggestion_text">{{ suggestion.title }}</div><a href="/suggestion/{{ suggestion.id }}">Open</a><br>
+		<br><a href="/suggestion/{{ suggestion.id }}"><div class="suggestion_text">{{ suggestion.title }}</div>Open</a><br>
 	</div>
 	{% endfor %}
 <script language="javascript">
