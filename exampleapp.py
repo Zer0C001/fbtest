@@ -31,11 +31,15 @@ app_secret_key =  hashlib.sha256(FB_APP_SECRET).hexdigest()
 
 def get_tokens():
 	if session.has_key('fbtiv'):
-		cipher = AES.new(app.secret_key, AES.MODE_CFB, session['fbtiv'])
+		cipher = AES.new(app_secret_key, AES.MODE_CFB, session['fbtiv'])
 		if session.has_key('app_access_token'):
-			app_access_token=session['app_access_token']
+			app_access_token=cipher.decrypt(session['app_access_token'])
 		else:
-			app_access_token=fbapi_get_application_access_token(FB_APP_ID)    
+			app_access_token=fbapi_get_application_access_token(FB_APP_ID)
+			session['app_access_token']=cipher.encrypt(app_access_token)
+		if session.has_key('long_uac'):
+			  long_uac=cipher.decrypt(session['long_uac'])
+			  #
 		access_token = get_token()
 		# try twice ?
 		if not access_token:
@@ -43,7 +47,12 @@ def get_tokens():
     
 
 
+def is_valid(app_access_token,input_token):
+	dbg = fb_call('debug_token', args={'access_token': access_token,'input_token':input_token})
+	print dbg
+	return True
 
+	
 
 def oauth_login_url(preserve_path=True, next_url=None):
     fb_login_uri = ("https://www.facebook.com/dialog/oauth"
@@ -210,6 +219,10 @@ def index():
         url = request.url
         
         app_access_token=fbapi_get_application_access_token(FB_APP_ID)
+        
+        if is_valid(app_access_token,access_token):
+        	print 'ok'
+        	
         categories=fb_call('app/objects/'+FBNS+':category',args={'access_token': app_access_token})
         num_cat=len(categories['data'])
         content=''
