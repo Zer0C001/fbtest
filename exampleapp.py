@@ -41,8 +41,11 @@ def get_tokens(fbtiv=False,short_uat=False):
 		#
 		has_uat=False
 		if session.has_key('long_uat'):
-			  tmp_long_uat=base64.urlsafe_b64decode(cipher.decrypt(session['long_uat']))
-			  has_uat=True
+			has_uat=True
+			try:
+			  	tmp_long_uat=base64.urlsafe_b64decode(cipher.decrypt(session['long_uat']))
+			except:
+				has_uat=False
 		if has_uat and (is_valid(app_access_token,tmp_long_uat)):
 			long_uat=tmp_long_uat
 		else:
