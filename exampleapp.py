@@ -35,11 +35,7 @@ def get_tokens(fbtiv=False,short_uat=False):
 			fbtiv=session['fbtiv']
 		cipher = AES.new(app_secret_key, AES.MODE_CFB, fbtiv)
 		# get app access token
-		if session.has_key('app_access_token'):
-			app_access_token=cipher.decrypt(session['app_access_token'])
-		else:
-			app_access_token=fbapi_get_application_access_token(FB_APP_ID)
-			session['app_access_token']=cipher.encrypt(app_access_token)
+		app_access_token=fbapi_get_application_access_token(FB_APP_ID)
 		#
 		# get long lived user access token
 		#
@@ -50,7 +46,7 @@ def get_tokens(fbtiv=False,short_uat=False):
 		if has_uat and (is_valid(app_access_token,tmp_long_uat)):
 			long_uat=tmp_long_uat
 		else:
-			if short_uat:
+			if short_uat and is_valid(app_access_token,short_uat):
 				access_token=short_uat
 			else:
 				access_token = get_token()
@@ -65,7 +61,6 @@ def get_tokens(fbtiv=False,short_uat=False):
 			else:
 				fbtiv = Random.new().read(AES.block_size)
 				cipher = AES.new(app_secret_key, AES.MODE_CFB, fbtiv)
-				session['app_access_token']=cipher.encrypt(app_access_token)
 				session['long_uat']=cipher.encrypt(long_uat)
 			#
 		return {'app_access_token':app_access_token,'user_access_token':long_uat}
