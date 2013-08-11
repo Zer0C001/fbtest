@@ -312,52 +312,44 @@ def close():
 @app.route('/suggestion/new', methods=['GET', 'POST'])
 def suggestion_new():
 	if request.method=="GET":
-	  access_token =  get_token()
-	  if not access_token :
-	    access_token =  get_token()
-	  me = fb_call('me', args={'access_token': access_token})
+	  tokens=get_tokens()
+	  me = fb_call('me', args={'access_token': tokens['user_access_token']})
 	  return render_template('suggestion_new.html',me=me)
 	elif request.method=="POST":
 		#import datetime
 		#datetimestr=str(datetime.datetime.now())
-		access_token =  get_token()
-		if not access_token :
-			access_token =  get_token()
-		app_access_token=fbapi_get_application_access_token(FB_APP_ID)
-		me = fb_call('me', args={'access_token': access_token})
+		tokens=get_tokens()
+		me = fb_call('me', args={'access_token': tokens['user_access_token']})
 		channel_url = url_for('get_channel', _external=True)
 		channel_url = channel_url.replace('http:', '').replace('https:', '') 
 		content=request.form['content']
 		if (not request.form.has_key('category_id')) or request.form['category_id']=='' or request.form['category_id']==None:
-			categories=fb_call('app/objects/'+FBNS+':category',args={'access_token': app_access_token})
+			categories=fb_call('app/objects/'+FBNS+':category',args={'access_token': tokens['app_access_token']})
 			if len(categories['data'])==1:
 				category_id=categories['data'][0]['id']
 		else:
 			category_id=request.form['category_id']
-		perm=fb_call('me/permissions',args={'access_token': access_token})
-		me=fb_call('me',args={'access_token': access_token,'fields':'id'})
+		perm=fb_call('me/permissions',args={'access_token': tokens['user_access_token']})
+		me=fb_call('me',args={'access_token': tokens['user_access_token'],'fields':'id'})
 		# facebook object suggestion required fields ( og:title:'<the suggestion text>', creator_id:'<int:me.id>',pos_votes:<int>, neg_votes:<int>)
 		if me.has_key('id'):
-		  fbc=fb_call('app/objects/'+FBNS+':suggestion',args={'access_token': app_access_token,'method':'POST', 'object': "{'title':'"+content+"','data':{'creator_id':'"+str(me['id'])+"','pos_votes':'0','neg_votes':'0','category_id':'"+category_id+"','closed':'False'}}" })
+		  fbc=fb_call('app/objects/'+FBNS+':suggestion',args={'access_token': tokens['app_access_token'],'method':'POST', 'object': "{'title':'"+content+"','data':{'creator_id':'"+str(me['id'])+"','pos_votes':'0','neg_votes':'0','category_id':'"+category_id+"','closed':'False'}}" })
 		else:
 			fbc={}
 		#facebook object user_suggestion required fields ( og:title:'<empty string>', suggestion_id:<int> )
 		if fbc.has_key('id'):
-		  fbc1=fb_call('me/objects/'+FBNS+':user_suggestion',args={'access_token': access_token,'method':'POST', 'object': "{'title':'','data':{'suggestion_id':'"+fbc['id']+"'}}" })
+		  fbc1=fb_call('me/objects/'+FBNS+':user_suggestion',args={'access_token': tokens['user_access_token'],'method':'POST', 'object': "{'title':'','data':{'suggestion_id':'"+fbc['id']+"'}}" })
 		else:
 			fbc1='error saving'
 
-		dbg=Markup("save suggestion: <br>"+content+"<br>"+str(fbc)+"<br>"+str(fbc1)+'<br>user: '+str(me)+'<br>perms:<br>'+str(perm)+'<br><br>'+str(request.form)+str(access_token))
+		dbg=Markup("save suggestion: <br>"+content+"<br>"+str(fbc)+"<br>"+str(fbc1)+'<br>user: '+str(me)+'<br>perms:<br>'+str(perm)+'<br><br>'+str(request.form))
 		return render_template('suggestion_saved.html',me=me,dbg=dbg,content='')
 	
 @app.route('/suggestion/<int:suggestion_id>', methods=['GET', 'POST'])
 def suggestion_show(suggestion_id):
-	access_token =  get_token()
-	if not access_token :
-		access_token =  get_token()
-	me = fb_call('me', args={'access_token': access_token})
-	app_access_token=fbapi_get_application_access_token(FB_APP_ID)
-	suggestion=fb_call(str(suggestion_id),args={'access_token': app_access_token})
+	tokens=get_tokens()
+	me = fb_call('me', args={'access_token': tokens['user_access_token']})
+	suggestion=fb_call(str(suggestion_id),args={'access_token': tokens['app_access_token']})
 	return render_template('suggestion_show.html',me=me,content=str(suggestion)+str(request.form))
 
 
