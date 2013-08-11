@@ -6,7 +6,7 @@
 
   <div>
     Welcome, <strong>{{me.name}}</strong><br>
-      <a href="/suggestion/new"> New suggestion</a><br>
+      <a href="/suggestion/new"> New suggestion</a>
   </div>
 
 {% endblock %}
@@ -18,7 +18,7 @@
 	<br>
 	{% for suggestion in suggestions %}
 	<div class="suggestion">	
-		<br><a href="/suggestion/{{ suggestion.id }}"><div class="suggestion_text">{{ suggestion.title }}</div></a><br>
+		<br><a href="/suggestion/{{ suggestion.id }}"><div class="suggestion_text">{{ suggestion.title }}</div></a>
 	</div>
 	{% endfor %}
 <script language="javascript">
