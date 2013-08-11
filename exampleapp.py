@@ -25,7 +25,7 @@ app_url = 'https://graph.facebook.com/{0}'.format(FB_APP_ID)
 FB_APP_NAME = json.loads(requests.get(app_url).content).get('name')
 FB_APP_SECRET = os.environ.get('FACEBOOK_SECRET')
 FBNS=os.environ.get('FBNS')
-app_secret_key =  hashlib.sha256(FB_APP_SECRET).hexdigest()
+app_secret_key =  hashlib.sha256(FB_APP_SECRET).digest()
 
 
 
@@ -57,6 +57,7 @@ def get_tokens(fbtiv=False):
 			if not access_token:
 				return False	
 			long_uac=fb_extend_token(access_token)
+			#
 		return {'app_access_token':app_access_token,'user_access_token':long_uac}
 	else:
 		fbtiv = Random.new().read(AES.block_size)
