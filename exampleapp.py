@@ -84,9 +84,9 @@ def fb_extend_token(access_token):
         (key, value) = pair.split("=")
         result_dict[key] = value
    new_token=result_dict['access_token']
-	print 'extended token:'
-	print new_token
-	return new_token
+   print 'extended token:'
+   print new_token
+   return new_token
 
 def is_valid(app_access_token,input_token):
 	dbg = fb_call('debug_token', args={'access_token': app_access_token,'input_token':input_token})
