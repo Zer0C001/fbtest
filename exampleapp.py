@@ -78,6 +78,7 @@ def fb_extend_token(access_token):
    #for pair in pairs:
    #     (key, value) = pair.split("=")
    #     result_dict[key] = value
+   print 'extended token:'
 	print new_token
 	return new_token
 
