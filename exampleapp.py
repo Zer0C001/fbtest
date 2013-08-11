@@ -211,14 +211,15 @@ def index():
         for i in range(0,min(10,len(suggestions))):
 	  disp_sug=fb_call(suggestions[i]['id'],args={'access_token': app_access_token})
 	  disp_suggestions+=[disp_sug]
+	  dbg=''+str(request.args)+str(request.form)+str(request.cookies)
 	content=''#+str(disp_suggestions)+str(request.args)#+' '+str(request.form)+str(request.cookies)
         return render_template(
             'index.html', app_id=FB_APP_ID, token=access_token, app=fb_app,
             me=me, url=url,
-            channel_url=channel_url, name=FB_APP_NAME+' '+FBNS+'  2',suggestions=disp_suggestions ,content=content)
+            channel_url=channel_url, name=FB_APP_NAME+' '+FBNS+'  2',suggestions=disp_suggestions ,content=content,dbg=dbg)
     else:
         permission_list = ",".join(app.config['FBAPI_SCOPE']) 
-        dbg=str(request.cookies)
+        dbg=''+str(request.args)+str(request.form)+str(request.cookies)
         return render_template('login.html', app_id=FB_APP_ID, token=access_token, url=request.url, channel_url=channel_url, name=FB_APP_NAME,  permission_list=permission_list,dbg=dbg)
 
 @app.route('/channel.html', methods=['GET', 'POST'])
@@ -270,7 +271,7 @@ def suggestion_new():
 		else:
 			fbc1='error saving'
 
-		dbg="save suggestion: <Br>"+content+"<br>"+str(fbc)+"<br>"+str(fbc1)+'<br>user: '+str(me)+'<br>perms:<br>'+str(perm)+'<br><br>'+str(request.form)+str(access_token)
+		dbg="save suggestion: \n"+content+"\n"+str(fbc)+"<br>"+str(fbc1)+'<br>user: '+str(me)+'<br>perms:<br>'+str(perm)+'<br><br>'+str(request.form)+str(access_token)
 		return render_template('suggestion_saved.html',me=me,dbg=dbg,content='')
 	
 @app.route('/suggestion/<int:suggestion_id>', methods=['GET', 'POST'])
