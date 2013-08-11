@@ -14,6 +14,9 @@ from flask import Flask, request, redirect, render_template, url_for
 import psycopg2
 import urlparse
 
+from Crypto.Cipher import AES
+from Crypto import Random
+
 
 FB_APP_ID = os.environ.get('FACEBOOK_APP_ID')
 requests = requests.session()
@@ -22,6 +25,25 @@ app_url = 'https://graph.facebook.com/{0}'.format(FB_APP_ID)
 FB_APP_NAME = json.loads(requests.get(app_url).content).get('name')
 FB_APP_SECRET = os.environ.get('FACEBOOK_SECRET')
 FBNS=os.environ.get('FBNS')
+app.secret_key =  hashlib.sha256(FB_APP_SECRET).hexdigest()
+print app.secret_key
+
+
+def get_tokens():
+	if session.has_key('fbtiv'):
+		cipher = AES.new(app.secret_key, AES.MODE_CFB, session['fbtiv'])
+		if session.has_key('app_access_token'):
+			app_access_token=session['app_access_token']
+		else:
+			app_access_token=fbapi_get_application_access_token(FB_APP_ID)    
+		access_token = get_token()
+		# try twice ?
+		if not access_token:
+			access_token = get_token()
+    
+
+
+
 
 def oauth_login_url(preserve_path=True, next_url=None):
     fb_login_uri = ("https://www.facebook.com/dialog/oauth"
@@ -271,7 +293,7 @@ def suggestion_new():
 		else:
 			fbc1='error saving'
 
-		dbg="save suggestion: \n"+content+"\n"+str(fbc)+"<br>"+str(fbc1)+'<br>user: '+str(me)+'<br>perms:<br>'+str(perm)+'<br><br>'+str(request.form)+str(access_token)
+		dbg=Markup("save suggestion: <br>"+content+"<br>"+str(fbc)+"<br>"+str(fbc1)+'<br>user: '+str(me)+'<br>perms:<br>'+str(perm)+'<br><br>'+str(request.form)+str(access_token))
 		return render_template('suggestion_saved.html',me=me,dbg=dbg,content='')
 	
 @app.route('/suggestion/<int:suggestion_id>', methods=['GET', 'POST'])
