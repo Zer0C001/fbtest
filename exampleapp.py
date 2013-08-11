@@ -74,7 +74,7 @@ def fb_extend_token(access_token):
     'client_id':FB_APP_ID,
     'client_secret':FB_APP_SECRET,
     'fb_exchange_token':access_token} 
-	new_token=fb_call(path=u"/oauth/access_token", args=params)
+	new_token=fb_call("/oauth/access_token", args=params)
    #pairs = result.split("&", 1)
    #result_dict = {}
    #for pair in pairs:
