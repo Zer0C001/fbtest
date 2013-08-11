@@ -124,7 +124,7 @@
             }
 
             var html = '<span class="shortcontent">' + c + '&nbsp;' + config.ellipsesText +
-                '</span><span class="allcontent" style="display:none;">' + content +
+                '</span><span class="allcontent">' + content +
                 '</span>&nbsp;&nbsp;<span><a href="javascript://nop/" class="morelink">' + config.moreText + '</a></span>';
 
             $this.html(html);
