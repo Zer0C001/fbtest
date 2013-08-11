@@ -29,7 +29,7 @@ app_secret_key =  hashlib.sha256(FB_APP_SECRET).digest()
 
 
 
-def get_tokens(fbtiv=False):
+def get_tokens(fbtiv=False,short_uat=False):
 	if fbtiv or session.has_key('fbtiv'):
 		if not fbtiv:
 			fbtiv=session['fbtiv']
@@ -50,10 +50,13 @@ def get_tokens(fbtiv=False):
 		if has_uac and (is_valid(app_access_token,tmp_long_uac)):
 			long_uac=tmp_long_uac
 		else:
-			access_token = get_token()
-			# try twice ?
-			if not access_token:
+			if short_uat:
+				access_token=short_uat
+			else:
 				access_token = get_token()
+				# try twice ?
+				if not access_token:
+					access_token = get_token()
 			if not access_token:
 				return False	
 			long_uac=fb_extend_token(access_token)
@@ -62,7 +65,7 @@ def get_tokens(fbtiv=False):
 	else:
 		fbtiv = Random.new().read(AES.block_size)
 		session['fbtiv']=fbtiv
-		return get_tokens(fbtiv)
+		return get_tokens(fbtiv,short_uat)
 			
     
 
@@ -233,13 +236,14 @@ def get_token():
 @app.route('/', methods=['GET', 'POST'])
 def index():
     # print get_home()
-    tokens=get_tokens()
-    print tokens
+
 
     access_token = get_token()
     # try twice ?
     if not access_token:
     	access_token = get_token()
+    tokens=get_tokens(short_uat=access_token)
+    print tokens
 
     channel_url = url_for('get_channel', _external=True)
     channel_url = channel_url.replace('http:', '').replace('https:', '')
