@@ -33,7 +33,7 @@ def get_tokens(fbtiv=False):
 	if fbtiv or session.has_key('fbtiv'):
 		if not fbtiv:
 			fbtiv=session['fbtiv']
-		cipher = AES.new(app_secret_key, AES.MODE_CFB, fbtiv)
+		cipher = AES.new(app_secret_key[:32], AES.MODE_CFB, fbtiv)
 		# get app access token
 		if session.has_key('app_access_token'):
 			app_access_token=cipher.decrypt(session['app_access_token'])
@@ -54,6 +54,8 @@ def get_tokens(fbtiv=False):
 			# try twice ?
 			if not access_token:
 				access_token = get_token()
+			if not access_token:
+				return False	
 			long_uac=fb_extend_token(access_token)
 		return {'app_access_token':app_access_token,'user_access_token':long_uac}
 	else:
