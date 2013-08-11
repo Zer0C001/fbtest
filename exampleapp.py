@@ -67,7 +67,7 @@ def fb_extend_token(access_token):
 	params = {'grant_type':'fb_exchange_token',           
     'client_id':FB_APP_ID,
     'client_secret':FB_APP_SECRET,
-    'fb_exchange_token':access_token}} 
+    'fb_exchange_token':access_token} 
 	new_token=fbapi_get_string(path=u"/oauth/access_token?", params=params,
                               encode_func=simple_dict_serialisation)
    #pairs = result.split("&", 1)
