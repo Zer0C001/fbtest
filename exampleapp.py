@@ -77,6 +77,7 @@ def fb_extend_token(access_token):
    if type(access_token)==list:
    	access_token=access_token[0]
 	new_token=requests.get('https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id='+str(FB_APP_ID)+'&client_secret='+FB_APP_SECRET+'&fb_exchange_token='+access_token)
+	new_token=new_token.content
    #pairs = result.split("&", 1)
    #result_dict = {}
    #for pair in pairs:
