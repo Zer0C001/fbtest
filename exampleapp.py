@@ -30,6 +30,7 @@ app_secret_key =  hashlib.sha256(FB_APP_SECRET).digest()
 
 
 def get_tokens(fbtiv=False,short_uat=False):
+	print 'get tokens:'
 	if fbtiv or session.has_key('fbtiv'):
 		if not fbtiv:
 			fbtiv=base64.urlsafe_b64decode(session['fbtiv'])
@@ -45,6 +46,7 @@ def get_tokens(fbtiv=False,short_uat=False):
 			try:
 			  	tmp_long_uat=base64.urlsafe_b64decode(cipher.decrypt(session['long_uat']))
 			except:
+				print 'exception in base64decode'
 				has_uat=False
 		if has_uat and (is_valid(app_access_token,tmp_long_uat)):
 			long_uat=tmp_long_uat
@@ -57,6 +59,7 @@ def get_tokens(fbtiv=False,short_uat=False):
 				if not access_token:
 					access_token = get_token()
 			if not access_token or not is_valid(app_access_token,access_token):
+				print 'no access token'
 				return False	
 			long_uat=fb_extend_token(access_token)
 			if not is_valid(app_access_token,long_uat):
