@@ -70,11 +70,11 @@ def get_tokens(fbtiv=False,short_uat=False):
     
 
 def fb_extend_token(access_token):
-	params = {'grant_type':'fb_exchange_token',           
-    'client_id':FB_APP_ID,
-    'client_secret':FB_APP_SECRET,
-    'fb_exchange_token':access_token} 
-	new_token=fb_call("/oauth/access_token", args=params)
+	#params = {'grant_type':'fb_exchange_token',           
+   # 'client_id':FB_APP_ID,
+   # 'client_secret':FB_APP_SECRET,
+   # 'fb_exchange_token':access_token} 
+	new_token=requests.get('https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id='+str(FB_APP_ID)+'&client_secret='+FB_APP_SECRET+'&fb_exchange_token='+access_token)
    #pairs = result.split("&", 1)
    #result_dict = {}
    #for pair in pairs:
