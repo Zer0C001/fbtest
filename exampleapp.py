@@ -57,7 +57,7 @@ def get_tokens(fbtiv=False,short_uat=False):
 				# try twice ?
 				if not access_token:
 					access_token = get_token()
-			if not access_token or not is_valid(access_token):
+			if not access_token or not is_valid(app_access_token,access_token):
 				return False	
 			long_uac=fb_extend_token(access_token)
 			#
