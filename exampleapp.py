@@ -18,11 +18,6 @@ from Crypto.Cipher import AES
 from Crypto import Random
 
 
-app = Flask(__name__)
-app.config.from_object(__name__)
-app.config.from_object('conf.Config')
-
-
 FB_APP_ID = os.environ.get('FACEBOOK_APP_ID')
 requests = requests.session()
 
@@ -30,8 +25,8 @@ app_url = 'https://graph.facebook.com/{0}'.format(FB_APP_ID)
 FB_APP_NAME = json.loads(requests.get(app_url).content).get('name')
 FB_APP_SECRET = os.environ.get('FACEBOOK_SECRET')
 FBNS=os.environ.get('FBNS')
-app.secret_key =  hashlib.sha256(FB_APP_SECRET).hexdigest()
-print app.secret_key
+app_secret_key =  hashlib.sha256(FB_APP_SECRET).hexdigest()
+
 
 
 def get_tokens():
@@ -140,7 +135,10 @@ def fb_call(call, args=None):
 
 
 
-
+app = Flask(__name__)
+app.config.from_object(__name__)
+app.config.from_object('conf.Config')
+app.secret_key=app_secret_key
 
 def get_home():
     return 'https://' + request.host + '/'
