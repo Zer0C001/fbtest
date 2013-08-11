@@ -44,7 +44,7 @@ def get_tokens(fbtiv=False,short_uat=False):
 		if session.has_key('long_uat'):
 			has_uat=True
 			try:
-			  	tmp_long_uat=base64.urlsafe_b64decode(cipher.decrypt(session['long_uat']))
+			  	tmp_long_uat=cipher.decrypt(base64.urlsafe_b64decode(session['long_uat']))
 			except:
 				print 'exception in base64decode'
 				has_uat=False
