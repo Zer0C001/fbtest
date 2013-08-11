@@ -250,12 +250,6 @@ def get_token():
 def index():
     # print get_home()
     tokens=get_tokens()
-    if not tokens:
-    	access_token = get_token()
-    	# try twice ?
-    	if not access_token:
-    		access_token = get_token()
-    	tokens=get_tokens(short_uat=access_token)
     print tokens
 
     channel_url = url_for('get_channel', _external=True)
@@ -265,8 +259,6 @@ def index():
 
         me = fb_call('me', args={'access_token': tokens['user_access_token']})
         fb_app = fb_call(FB_APP_ID, args={'access_token': tokens['user_access_token']})
-        likes =  fb_call('me/likes',
-                        args={'access_token': tokens['user_access_token'], 'limit': 4})
 
         redir = get_home() + 'close/'
         url = request.url
@@ -277,7 +269,6 @@ def index():
         content=''
         if num_cat==0:
         	init_cat=fb_call('app/objects/'+FBNS+':category',args={'access_token': tokens['app_access_token'],'method':'POST', 'object': "{'title':'Uncategorized'}"})
-        	#content+='   '+str(init_cat)
         suggestions=fb_call('app/objects/'+FBNS+':suggestion',args={'access_token': tokens['app_access_token'],'fields':'id,created_time,data'})#,pos_votes,neg_votes,category_id'})
         sort=request.args.get('sort','votes')
         if suggestions.has_key('data'):
@@ -295,12 +286,11 @@ def index():
         for i in range(0,min(10,len(suggestions))):
 	  disp_sug=fb_call(suggestions[i]['id'],args={'access_token': tokens['app_access_token']})
 	  disp_suggestions+=[disp_sug]
-	  dbg=''+str(request.args)+str(request.form)+str(request.cookies)
-	content=''#+str(disp_suggestions)+str(request.args)#+' '+str(request.form)+str(request.cookies)
+	  content=''#+str(disp_suggestions)+str(request.args)#+' '+str(request.form)+str(request.cookies)
         return render_template(
             'index.html', app_id=FB_APP_ID, app=fb_app,
             me=me, url=url,
-            channel_url=channel_url, name=FB_APP_NAME+' '+FBNS+'  2',suggestions=disp_suggestions ,content=content,dbg=dbg)
+            channel_url=channel_url, name=FB_APP_NAME+' '+FBNS+'  2',suggestions=disp_suggestions ,content=content)
     else:
         permission_list = ",".join(app.config['FBAPI_SCOPE']) 
         dbg=''+str(request.args)+str(request.form)+str(request.cookies)
@@ -326,8 +316,6 @@ def suggestion_new():
 	  me = fb_call('me', args={'access_token': tokens['user_access_token']})
 	  return render_template('suggestion_new.html',me=me)
 	elif request.method=="POST":
-		#import datetime
-		#datetimestr=str(datetime.datetime.now())
 		tokens=get_tokens()
 		if not tokens:
 			return "Error please try again"
@@ -343,7 +331,7 @@ def suggestion_new():
 			category_id=request.form['category_id']
 		perm=fb_call('me/permissions',args={'access_token': tokens['user_access_token']})
 		me=fb_call('me',args={'access_token': tokens['user_access_token'],'fields':'id'})
-		# facebook object suggestion required fields ( og:title:'<the suggestion text>', creator_id:'<int:me.id>',pos_votes:<int>, neg_votes:<int>)
+		# facebook object suggestion required fields ( og:title:'<the suggestion text>', creator_id:'<int:me.id>',pos_votes:<int>, neg_votes:<int>,closed:<bool>)
 		if me.has_key('id'):
 		  fbc=fb_call('app/objects/'+FBNS+':suggestion',args={'access_token': tokens['app_access_token'],'method':'POST', 'object': "{'title':'"+content+"','data':{'creator_id':'"+str(me['id'])+"','pos_votes':'0','neg_votes':'0','category_id':'"+category_id+"','closed':'False'}}" })
 		else:
