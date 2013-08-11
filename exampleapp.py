@@ -48,8 +48,9 @@ def get_tokens():
 
 
 def is_valid(app_access_token,input_token):
-	input_token=input_token[0]+'s'
+	input_token=input_token[0]+input_token[0]
 	dbg = fb_call('debug_token', args={'access_token': app_access_token,'input_token':input_token})
+	print dbg
 	return str(dbg['data']['is_valid'])
 
 
