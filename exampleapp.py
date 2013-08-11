@@ -43,7 +43,7 @@ def get_tokens(fbtiv=False,short_uat=False):
 		#
 		# get long lived user access token
 		#
-		has_uac=False
+		has_uat=False
 		if session.has_key('long_uat'):
 			  tmp_long_uat=cipher.decrypt(session['long_uat'])
 			  has_uat=True
