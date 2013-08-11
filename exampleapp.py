@@ -86,8 +86,6 @@ def fb_extend_token(access_token):
         (key, value) = pair.split("=")
         result_dict[key] = value
    new_token=result_dict['access_token']
-   #print 'extended token:'
-   #print new_token
    return new_token
 
 def is_valid(app_access_token,input_token):
@@ -237,7 +235,6 @@ def get_token():
         from urlparse import parse_qs
         r = requests.get('https://graph.facebook.com/oauth/access_token', params=params)
         token = parse_qs(r.content).get('access_token')
-        print str(r)+str(r.content)
         return token
 
 
