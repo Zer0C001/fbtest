@@ -270,7 +270,7 @@ def suggestion_new():
 		else:
 			fbc1='error saving'
 
-		dbg="save suggestion: <Br>"+content+"<br>"+str(fbc)+"<br>"+str(fbc1)+'<br>user: '+str(me)+'<br>perms:<br>'+str(perm)+'<br><br>'+str(request.form)
+		dbg="save suggestion: <Br>"+content+"<br>"+str(fbc)+"<br>"+str(fbc1)+'<br>user: '+str(me)+'<br>perms:<br>'+str(perm)+'<br><br>'+str(request.form)+str(access_token)
 		return render_template('suggestion_saved.html',me=me,dbg=dbg,content='')
 	
 @app.route('/suggestion/<int:suggestion_id>', methods=['GET', 'POST'])
