@@ -48,7 +48,6 @@ def get_tokens():
 
 
 def is_valid(app_access_token,input_token):
-	input_token='sssss'
 	dbg = fb_call('debug_token', args={'access_token': app_access_token,'input_token':input_token})
 	print dbg
 	return dbg['data']['is_valid']
@@ -221,7 +220,7 @@ def index():
         
         app_access_token=fbapi_get_application_access_token(FB_APP_ID)
         
-        if is_valid(app_access_token,access_token):
+        if is_valid(app_access_token,app_access_token):
         	print 'ok'
         	
         categories=fb_call('app/objects/'+FBNS+':category',args={'access_token': app_access_token})
