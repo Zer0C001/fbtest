@@ -352,7 +352,7 @@ def suggestion_show(suggestion_id):
 		return "Error please try again"
 	me = fb_call('me', args={'access_token': tokens['user_access_token']})
 	suggestion=fb_call(str(suggestion_id),args={'access_token': tokens['app_access_token']})
-	return render_template('suggestion_show.html',me=me,content=str(suggestion)+str(request.form),suggestion_url=get_home()+'suggestion/'+suggestion_id)
+	return render_template('suggestion_show.html',me=me,content=str(suggestion)+str(request.form),suggestion_url=get_home()+'suggestion/'+str(suggestion_id))
 
 
 
