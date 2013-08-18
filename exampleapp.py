@@ -151,12 +151,10 @@ def suggestion_new():
 	
 @app.route('/suggestion/<int:suggestion_id>', methods=['GET', 'POST'])
 def suggestion_show(suggestion_id):
-	fb=pgsql_fb.fb_api(session)
-	tokens=fb.get_tokens()
-	if not tokens:
-		return "Error please try again"
-	me = fb.call('me', args={'access_token': tokens['user_access_token']})
-	suggestion=fb.call(str(suggestion_id),args={'access_token': tokens['app_access_token']})
+	fb=pgsql_fb.data_fb(session)
+	tokens=fb.login()
+	me = fb.me(strict=False)
+	suggestion=fb.fb.call(str(suggestion_id),args={'access_token': tokens['app_access_token']})
 	return render_template('suggestion_show.html',me=me,content=str(suggestion)+str(request.form),suggestion_url='https://graph.facebook.com/'+str(suggestion_id))
 
 

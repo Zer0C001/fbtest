@@ -234,9 +234,22 @@ class fb_api:
 class data_fb:
 	def __init__(self,session):
 		self.fb=fb_api(session)
+		# app only token=self.fb.app_access_token
 	def login(self):
 		self.tokens=self.fb.get_tokens()
 		return self.tokens
+	def me(self,strict=True):
+		self.login()
+		try:
+			me=self.fb.call('me', args={'access_token': self.tokens['user_access_token']})
+		except:
+			me=False
+		if not strict:
+			if not me.haskey('name'):
+				me['name']=''
+			if not me.haskey('id'):
+				me['id']=0
+		return me
 		
 		
 class data_pgsql:
