@@ -245,11 +245,11 @@ class data_pgsql:
 	def new_suggestion(self,suggestion_id,creator_id,category_id):
 		self.get_cursor()
 		saved=False
-		#try:
-		self.cur.execute("insert into suggestions(id,creator_id,category_id,created_time,pos_votes,neg_votes,closed) values ("+str(suggestion_id)+","+str(creator_id)+","+str(category_id)+",now(),0,0,false);")
-		saved=True
-		#except:
-		#	saved=False
+		try:
+			self.cur.execute("insert into suggestions(id,creator_id,category_id,created_time,pos_votes,neg_votes,closed) values ("+str(suggestion_id)+","+str(creator_id)+","+str(category_id)+",now(),0,0,false);")
+			saved=True
+		except:
+			saved=False
 		self.conn.close()
 		return saved
 	def get_cursor(self):
