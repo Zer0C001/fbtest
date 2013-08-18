@@ -62,6 +62,7 @@ class fb_api:
 			print 'line 60'
 			if has_uat and (self.is_valid(app_access_token,tmp_long_uat)):
 				long_uat=tmp_long_uat
+				self.user_access_token=long_uat
 				print 'has uat'
 			else:
 				access_token = self.get_token()
