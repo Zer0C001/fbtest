@@ -206,7 +206,7 @@ class fb_api:
 	        if not data['algorithm'].upper() == 'HMAC-SHA256':
 	            raise ValueError('unknown algorithm {0}'.format(data['algorithm']))
 
-	        h = hmac.new(FB_APP_SECRET, digestmod=hashlib.sha256)
+	        h = hmac.new(self.FB_APP_SECRET, digestmod=hashlib.sha256)
 	        h.update(encoded_data[1])
 	        expected_sig = urlsafe_b64encode(h.digest()).replace('=', '')
 
