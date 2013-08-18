@@ -154,7 +154,7 @@ def suggestion_show(suggestion_id):
 	fb=pgsql_fb.data_fb(session)
 	tokens=fb.login()
 	me = fb.me(strict=False)
-	suggestion=fb.fb.call(str(suggestion_id),args={'access_token': tokens['app_access_token']})
+	suggestion=fb.fb.call(str(suggestion_id),args={'access_token': fb.fb.app_access_token})
 	return render_template('suggestion_show.html',me=me,content=str(suggestion)+str(request.form),suggestion_url='https://graph.facebook.com/'+str(suggestion_id))
 
 
