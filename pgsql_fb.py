@@ -256,7 +256,7 @@ class data_pgsql:
 		try:
 			self.conn = psycopg2.connect(self.db_url)
 			self.conn.autocommit=True
-			self.cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+			self.cur = self.conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
 		except:
 			print 'error connecting'
 		
