@@ -22,10 +22,10 @@ class fb_api:
 		self.FB_APP_ID = os.environ.get('FACEBOOK_APP_ID')
 		self.requests = requests.session()
 		self.app_url = 'https://graph.facebook.com/{0}'.format(self.FB_APP_ID)
-		self.FB_APP_NAME = json.loads(requests.get(app_url).content).get('name')
+		self.FB_APP_NAME = json.loads(requests.get(self.app_url).content).get('name')
 		self.FB_APP_SECRET = os.environ.get('FACEBOOK_SECRET')
 		self.FBNS=os.environ.get('FBNS')
-		self.app_secret_key =  hashlib.sha256(FB_APP_SECRET).digest()
+		self.app_secret_key =  hashlib.sha256(self.FB_APP_SECRET).digest()
 		
 		
 	def get_tokens(self):
@@ -70,7 +70,7 @@ class fb_api:
 					return False
 				else:
 					fbtiv = Random.new().read(AES.block_size)
-					cipher = AES.new(app_secret_key, AES.MODE_CFB, fbtiv)
+					cipher = AES.new(self.app_secret_key, AES.MODE_CFB, fbtiv)
 					session['fbtiv']=base64.urlsafe_b64encode(fbtiv)
 					session['long_uat']=base64.urlsafe_b64encode(cipher.encrypt(long_uat))
 					self.user_access_token=long_uat
