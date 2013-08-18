@@ -243,7 +243,7 @@ class data_fb:
 		try:
 			me=self.fb.call('me', args={'access_token': self.tokens['user_access_token']})
 		except:
-			me=False
+			me=False 
 		if not strict:
 			if not me.haskey('name'):
 				me['name']=''
