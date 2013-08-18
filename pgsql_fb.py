@@ -65,7 +65,7 @@ class fb_api:
 				if not access_token or not self.is_valid(app_access_token,access_token):
 					print 'no access token'
 					return False	
-				long_uat=slef.extend_token(access_token)
+				long_uat=self.extend_token(access_token)
 				if not self.is_valid(app_access_token,long_uat):
 					return False
 				else:
