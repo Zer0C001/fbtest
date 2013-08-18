@@ -237,3 +237,28 @@ class data_fb:
 	def login(self):
 		self.tokens=self.fb.get_tokens()
 		return self.tokens
+		
+		
+class data_pgsql:
+	def __init__(self,db_url):
+		self.db_url=db_url
+	def new_suggestion(self,suggestion_id,creator_id,category_id):
+		self.get_cursor()
+		saved=False
+		try:
+			self.cur.execute("insert into suggestions(id,creator_id,category_id,created_time,pos_votes,neg_votes,closed) values ("+str(suggestion_id)+","+str(creator_id)+","+str(category_id)+",now(),0,0,false);")
+			saved=True
+		except:
+			saved=False
+		self.conn.close()
+		return saved
+	def get_cursor(self):
+		try:
+			self.conn = psycopg2.connect(self.db_url)
+			self.conn.autocommit=True
+			self.cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
+		except:
+			print 'error connecting'
+		
+		
+		

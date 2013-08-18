@@ -27,7 +27,7 @@ FB_APP_NAME = json.loads(requests.get(app_url).content).get('name')
 FB_APP_SECRET = os.environ.get('FACEBOOK_SECRET')
 FBNS=os.environ.get('FBNS')
 app_secret_key =  hashlib.sha256(FB_APP_SECRET).digest()
-
+db_url=os.environ.get('DATABASE_URL')
 
 import pgsql_fb
 
@@ -139,10 +139,14 @@ def suggestion_new():
 		#facebook object user_suggestion required fields ( og:title:'<empty string>', suggestion_id:<int> )
 		if fbc.has_key('id'):
 		  fbc1=fb.call('me/objects/'+FBNS+':user_suggestion',args={'access_token': tokens['user_access_token'],'method':'POST', 'object': "{'title':'','data':{'suggestion_id':'"+fbc['id']+"'}}" })
+		  
+		  pg=pgsql_fb.data_pgsql
+		  pg0=pg.new_suggestion(suggestion_id=fbc['id'],creator_id=me['id'],category_id=category_id)
+		  
 		else:
 			fbc1='error saving'
-
-		dbg="save suggestion: <br>"+content+"<br>"+str(fbc)+"<br>"+str(fbc1)+'<br>user: '+str(me)+'<br>perms:<br>'+str(perm)+'<br><br>'+str(request.form)
+			pg0="fbc_err"
+		dbg="save suggestion: <br>"+content+"<br>"+str(fbc)+"<br>"+str(fbc1)+'\n pg:'+str(pg1)+' <br>user: '+str(me)+'<br>perms:<br>'+str(perm)+'<br><br>'+str(request.form)
 		return render_template('suggestion_saved.html',me=me,dbg=dbg,content='')
 	
 @app.route('/suggestion/<int:suggestion_id>', methods=['GET', 'POST'])
