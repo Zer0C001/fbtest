@@ -46,54 +46,50 @@ def get_home():
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    # print get_home()
-    fb=pgsql_fb.data_fb(session)
-    tokens=fb.login()
-    print tokens
+	 # print get_home()
+	fb=pgsql_fb.data_fb(session)
+	tokens=fb.login()
+	print tokens
+	channel_url = url_for('get_channel', _external=True)
+	channel_url = channel_url.replace('http:', '').replace('https:', '')
 
-    channel_url = url_for('get_channel', _external=True)
-    channel_url = channel_url.replace('http:', '').replace('https:', '')
-
-    if tokens:
-
-        me = fb.fb.call('me', args={'access_token': tokens['user_access_token']})
-        fb_app = fb.fb.call(FB_APP_ID, args={'access_token': tokens['user_access_token']})
-
-        redir = get_home() + 'close/'
-        url = request.url
-        
-        	
-        categories=fb.fb.call('app/objects/'+FBNS+':category',args={'access_token': tokens['app_access_token']})
-        num_cat=len(categories['data'])
-        content=''
-        if num_cat==0:
-        	init_cat=fb.fb.call('app/objects/'+FBNS+':category',args={'access_token': tokens['app_access_token'],'method':'POST', 'object': "{'title':'Uncategorized'}"})
-        suggestions=fb.fb.call('app/objects/'+FBNS+':suggestion',args={'access_token': tokens['app_access_token'],'fields':'id,created_time,data'})#,pos_votes,neg_votes,category_id'})
-        sort=request.args.get('sort','votes')
-        if suggestions.has_key('data'):
-        	suggestions=suggestions['data']
-        	for i in range(0,len(suggestions)):
-        		if not suggestions[i].has_key('data'):
-        		  del suggestions[i]
-        	if sort=='date':
-        		suggestions.sort(key=lambda k: k['created_time'])
-        		suggestions.reverse()
-        	elif sort=='votes':
-        		suggestions.sort(key=lambda k: k['data']['pos_votes']+k['data']['neg_votes'])
-        #	suggestions=l_obj
-        disp_suggestions=[]
-        for i in range(0,min(10,len(suggestions))):
-	  disp_sug=fb.fb.call(suggestions[i]['id'],args={'access_token': tokens['app_access_token']})
+	me = fb.me(strict=False)
+	fb_app = fb.fb.call(FB_APP_ID, args={'access_token': fb.fb.app_access_token})
+	
+	redir = get_home() + 'close/'
+	url = request.url
+	  
+	  	
+	categories=fb.fb.call('app/objects/'+FBNS+':category',args={'access_token': fb.fb.app_access_token})
+	num_cat=len(categories['data'])
+	content=''
+	if num_cat==0:
+	  	init_cat=fb.fb.call('app/objects/'+FBNS+':category',args={'access_token': fb.fb.app_access_token,'method':'POST', 'object': "{'title':'Uncategorized'}"})
+	suggestions=fb.fb.call('app/objects/'+FBNS+':suggestion',args={'access_token': fb.fb.app_access_token,'fields':'id,created_time,data'})#,pos_votes,neg_votes,category_id'})
+	sort=request.args.get('sort','votes')
+	if suggestions.has_key('data'):
+	  	suggestions=suggestions['data']
+	  	for i in range(0,len(suggestions)):
+	  		if not suggestions[i].has_key('data'):
+	  		  del suggestions[i]
+	  	if sort=='date':
+	  		suggestions.sort(key=lambda k: k['created_time'])
+	  		suggestions.reverse()
+	  	elif sort=='votes':
+	  		suggestions.sort(key=lambda k: k['data']['pos_votes']+k['data']['neg_votes'])
+	  #	suggestions=l_obj
+	disp_suggestions=[]
+	for i in range(0,min(10,len(suggestions))):
+	  disp_sug=fb.fb.call(suggestions[i]['id'],args={'access_token': fb.fb.app_access_token})
 	  disp_suggestions+=[disp_sug]
-	  content=''#+str(disp_suggestions)+str(request.args)#+' '+str(request.form)+str(request.cookies)
-        return render_template(
-            'index.html', app_id=FB_APP_ID, app=fb_app,
-            me=me, url=url,
-            channel_url=channel_url, name=FB_APP_NAME+' '+FBNS+'  2',suggestions=disp_suggestions ,content=content)
-    else:
-        permission_list = ",".join(app.config['FBAPI_SCOPE']) 
-        dbg=''+str(request.args)+str(request.form)+str(request.cookies)
-        return render_template('login.html', app_id=FB_APP_ID, url=request.url, channel_url=channel_url, name=FB_APP_NAME,  permission_list=permission_list,dbg=dbg)
+	content=''#+str(disp_suggestions)+str(request.args)#+' '+str(request.form)+str(request.cookies)
+	permission_list = ",".join(app.config['FBAPI_SCOPE'])
+	
+	return render_template(
+	      'index.html', app_id=FB_APP_ID, app=fb_app,
+	      me=me, url=url,
+	      channel_url=channel_url, name=FB_APP_NAME+' '+FBNS+'  2',suggestions=disp_suggestions ,content=content,permission_list=permission_list)
+
 
 @app.route('/channel.html', methods=['GET', 'POST'])
 def get_channel():
