@@ -153,7 +153,7 @@ def suggestion_show(suggestion_id):
 	fb=pgsql_fb.data_fb(session)
 	tokens=fb.login()
 	me = fb.me(strict=False)
-	suggestion=fb.get_suggestion((suggestion_id)
+	suggestion=fb.get_suggestion(suggestion_id)
 	return render_template('suggestion_show.html',me=me,content=str(suggestion)+str(request.form),suggestion_url=get_home()+'suggestion/'+str(suggestion_id),permission_list=permission_list)
 
 
