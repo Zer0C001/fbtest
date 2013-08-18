@@ -7,11 +7,11 @@ import json
 import hashlib
 from base64 import urlsafe_b64decode, urlsafe_b64encode
 
-#import requests
-#from flask import Flask, request, session, redirect, render_template, url_for
-#import psycopg2
-#import psycopg2.extras
-#import urlparse
+import requests
+from flask import Flask, request, session, redirect, render_template, url_for
+import psycopg2
+import psycopg2.extras
+import urlparse
 
 from Crypto.Cipher import AES
 from Crypto import Random

@@ -12,6 +12,7 @@ from base64 import urlsafe_b64decode, urlsafe_b64encode
 import requests
 from flask import Flask, request, session, redirect, render_template, url_for
 import psycopg2
+import psycopg2.extras
 import urlparse
 
 from Crypto.Cipher import AES
@@ -28,173 +29,9 @@ FBNS=os.environ.get('FBNS')
 app_secret_key =  hashlib.sha256(FB_APP_SECRET).digest()
 
 
+import pgsql_fb
 
-def get_tokens(fbtiv=False,short_uat=False):
-	print 'get tokens:'
-	if fbtiv or session.has_key('fbtiv'):
-		if not fbtiv:
-			fbtiv=base64.urlsafe_b64decode(session['fbtiv'])
-		cipher = AES.new(app_secret_key, AES.MODE_CFB, fbtiv)
-		# get app access token
-		app_access_token=fbapi_get_application_access_token(FB_APP_ID)
-		#
-		# get long lived user access token
-		#
-		has_uat=False
-		if session.has_key('long_uat'):
-			has_uat=True
-			try:
-			  	tmp_long_uat=cipher.decrypt(base64.urlsafe_b64decode(session['long_uat']))
-			except:
-				print 'exception in base64decode'
-				has_uat=False
-		if has_uat and (is_valid(app_access_token,tmp_long_uat)):
-			long_uat=tmp_long_uat
-		else:
-			if short_uat and is_valid(app_access_token,short_uat):
-				access_token=short_uat
-			else:
-				access_token = get_token()
-				# try twice ?
-				if not access_token:
-					access_token = get_token()
-			if not access_token or not is_valid(app_access_token,access_token):
-				print 'no access token'
-				return False	
-			long_uat=fb_extend_token(access_token)
-			if not is_valid(app_access_token,long_uat):
-				return False
-			else:
-				fbtiv = Random.new().read(AES.block_size)
-				cipher = AES.new(app_secret_key, AES.MODE_CFB, fbtiv)
-				session['fbtiv']=base64.urlsafe_b64encode(fbtiv)
-				session['long_uat']=base64.urlsafe_b64encode(cipher.encrypt(long_uat))
-			#
-		return {'app_access_token':app_access_token,'user_access_token':long_uat}
-	else:
-		fbtiv = Random.new().read(AES.block_size)
-		session['fbtiv']=base64.urlsafe_b64encode(fbtiv)
-		return get_tokens(fbtiv,short_uat)
-			
-    
-
-def fb_extend_token(access_token):
-	#params = {'grant_type':'fb_exchange_token',           
-   # 'client_id':FB_APP_ID,
-   # 'client_secret':FB_APP_SECRET,
-   # 'fb_exchange_token':access_token} 
-   if type(access_token)==list:
-   	access_token=access_token[0]
-	new_token=requests.get('https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id='+str(FB_APP_ID)+'&client_secret='+FB_APP_SECRET+'&fb_exchange_token='+access_token)
-	new_token=new_token.content
-   pairs = new_token.split("&", 1)
-   result_dict = {}
-   for pair in pairs:
-        (key, value) = pair.split("=")
-        result_dict[key] = value
-   new_token=result_dict['access_token']
-   return new_token
-
-def is_valid(app_access_token,input_token):
-	dbg = fb_call('debug_token', args={'access_token': app_access_token,'input_token':input_token})
-	print 'is_valid:'
-	print dbg
-	if dbg.has_key('data') and dbg['data'].has_key('is_valid'):
-		return dbg['data']['is_valid']
-	else:
-		return False
-
-
-
-def oauth_login_url(preserve_path=True, next_url=None):
-    fb_login_uri = ("https://www.facebook.com/dialog/oauth"
-                    "?client_id=%s&redirect_uri=%s" %
-                    (app.config['FB_APP_ID'], get_home()))
-
-    if app.config['FBAPI_SCOPE']:
-        fb_login_uri += "&scope=%s" % ",".join(app.config['FBAPI_SCOPE'])
-    return fb_login_uri
-
-
-def simple_dict_serialisation(params):
-    return "&".join(map(lambda k: "%s=%s" % (k, params[k]), params.keys()))
-
-
-def base64_url_encode(data):
-    return base64.urlsafe_b64encode(data).rstrip('=')
-
-
-def fbapi_get_string(path,
-    domain=u'graph', params=None, access_token=None,
-    encode_func=urllib.urlencode):
-    """Make an API call"""
-
-    if not params:
-        params = {}
-    params[u'method'] = u'GET'
-    if access_token:
-        params[u'access_token'] = access_token
-
-    for k, v in params.iteritems():
-        if hasattr(v, 'encode'):
-            params[k] = v.encode('utf-8')
-
-    url = u'https://' + domain + u'.facebook.com' + path
-    params_encoded = encode_func(params)
-    url = url + params_encoded
-    result = requests.get(url).content
-
-    return result
-
-
-def fbapi_auth(code):
-    params = {'client_id': app.config['FB_APP_ID'],
-              'redirect_uri': get_home(),
-              'client_secret': app.config['FB_APP_SECRET'],
-              'code': code}
-
-    result = fbapi_get_string(path=u"/oauth/access_token?", params=params,
-                              encode_func=simple_dict_serialisation)
-    pairs = result.split("&", 1)
-    result_dict = {}
-    for pair in pairs:
-        (key, value) = pair.split("=")
-        result_dict[key] = value
-    return (result_dict["access_token"], result_dict["expires"])
-
-
-def fbapi_get_application_access_token(id):
-	 token=requests.get('https://graph.facebook.com/oauth/access_token?grant_type=client_credentials&client_id='+id+'&client_secret='+FB_APP_SECRET)
-	 token=token.content
-	 token=token.split('=')[-1]
-    #token = fbapi_get_string(
-    #    path=u"/oauth/access_token",
-    #    params=dict(grant_type=u'client_credentials', client_id=id,
-    #                client_secret=app.config['FB_APP_SECRET'],redirect_uri='none'),
-    #    domain=u'graph')
-    #token = token.split('=')[-1]
-	 if not str(id) in token:
-	     print 'Token mismatch: %s not in %s' % (id, token)
-	 return token
-
-def fql(fql, token, args=None):
-    if not args:
-        args = {}
-
-    args["query"], args["format"], args["access_token"] = fql, "json", token
-
-    url = "https://api.facebook.com/method/fql.query"
-
-    r = requests.get(url, params=args)
-    return json.loads(r.content)
-
-
-def fb_call(call, args=None):
-    url = "https://graph.facebook.com/{0}".format(call)
-    r = requests.get(url, params=args)
-    return json.loads(r.content)
-
-
+fb=pgsql_fb.fb_api()
 
 app = Flask(__name__)
 app.config.from_object(__name__)
@@ -205,51 +42,12 @@ def get_home():
     return 'https://' + request.host + '/'
 
 
-def get_token():
-
-    if request.args.get('code', None):
-        return fbapi_auth(request.args.get('code'))[0]
-
-    cookie_key = 'fbsr_{0}'.format(FB_APP_ID)
-
-    if cookie_key in request.cookies:
-
-        c = request.cookies.get(cookie_key)
-        encoded_data = c.split('.', 2)
-
-        sig = encoded_data[0]
-        data = json.loads(urlsafe_b64decode(str(encoded_data[1]) +
-            (64-len(encoded_data[1])%64)*"="))
-
-        if not data['algorithm'].upper() == 'HMAC-SHA256':
-            raise ValueError('unknown algorithm {0}'.format(data['algorithm']))
-
-        h = hmac.new(FB_APP_SECRET, digestmod=hashlib.sha256)
-        h.update(encoded_data[1])
-        expected_sig = urlsafe_b64encode(h.digest()).replace('=', '')
-
-        if sig != expected_sig:
-            raise ValueError('bad signature')
-
-        code =  data['code']
-
-        params = {
-            'client_id': FB_APP_ID,
-            'client_secret': FB_APP_SECRET,
-            'redirect_uri': '',
-            'code': data['code']
-        }
-
-        from urlparse import parse_qs
-        r = requests.get('https://graph.facebook.com/oauth/access_token', params=params)
-        token = parse_qs(r.content).get('access_token')
-        return token
 
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
     # print get_home()
-    tokens=get_tokens()
+    tokens=fb.get_tokens()
     print tokens
 
     channel_url = url_for('get_channel', _external=True)
@@ -257,19 +55,19 @@ def index():
 
     if tokens:
 
-        me = fb_call('me', args={'access_token': tokens['user_access_token']})
-        fb_app = fb_call(FB_APP_ID, args={'access_token': tokens['user_access_token']})
+        me = fb.call('me', args={'access_token': tokens['user_access_token']})
+        fb_app = fb.call(FB_APP_ID, args={'access_token': tokens['user_access_token']})
 
         redir = get_home() + 'close/'
         url = request.url
         
         	
-        categories=fb_call('app/objects/'+FBNS+':category',args={'access_token': tokens['app_access_token']})
+        categories=fb.call('app/objects/'+FBNS+':category',args={'access_token': tokens['app_access_token']})
         num_cat=len(categories['data'])
         content=''
         if num_cat==0:
-        	init_cat=fb_call('app/objects/'+FBNS+':category',args={'access_token': tokens['app_access_token'],'method':'POST', 'object': "{'title':'Uncategorized'}"})
-        suggestions=fb_call('app/objects/'+FBNS+':suggestion',args={'access_token': tokens['app_access_token'],'fields':'id,created_time,data'})#,pos_votes,neg_votes,category_id'})
+        	init_cat=fb.call('app/objects/'+FBNS+':category',args={'access_token': tokens['app_access_token'],'method':'POST', 'object': "{'title':'Uncategorized'}"})
+        suggestions=fb.call('app/objects/'+FBNS+':suggestion',args={'access_token': tokens['app_access_token'],'fields':'id,created_time,data'})#,pos_votes,neg_votes,category_id'})
         sort=request.args.get('sort','votes')
         if suggestions.has_key('data'):
         	suggestions=suggestions['data']
@@ -284,7 +82,7 @@ def index():
         #	suggestions=l_obj
         disp_suggestions=[]
         for i in range(0,min(10,len(suggestions))):
-	  disp_sug=fb_call(suggestions[i]['id'],args={'access_token': tokens['app_access_token']})
+	  disp_sug=fb.call(suggestions[i]['id'],args={'access_token': tokens['app_access_token']})
 	  disp_suggestions+=[disp_sug]
 	  content=''#+str(disp_suggestions)+str(request.args)#+' '+str(request.form)+str(request.cookies)
         return render_template(
@@ -310,35 +108,35 @@ def close():
 @app.route('/suggestion/new', methods=['GET', 'POST'])
 def suggestion_new():
 	if request.method=="GET":
-	  tokens=get_tokens()
+	  tokens=fb.get_tokens()
 	  if not tokens:
 	  	return "Error please try again"
-	  me = fb_call('me', args={'access_token': tokens['user_access_token']})
+	  me = fb.call('me', args={'access_token': tokens['user_access_token']})
 	  return render_template('suggestion_new.html',me=me)
 	elif request.method=="POST":
 		tokens=get_tokens()
 		if not tokens:
 			return "Error please try again"
-		me = fb_call('me', args={'access_token': tokens['user_access_token']})
+		me = fb.call('me', args={'access_token': tokens['user_access_token']})
 		channel_url = url_for('get_channel', _external=True)
 		channel_url = channel_url.replace('http:', '').replace('https:', '') 
 		content=request.form['content']
 		if (not request.form.has_key('category_id')) or request.form['category_id']=='' or request.form['category_id']==None:
-			categories=fb_call('app/objects/'+FBNS+':category',args={'access_token': tokens['app_access_token']})
+			categories=fb.call('app/objects/'+FBNS+':category',args={'access_token': tokens['app_access_token']})
 			if len(categories['data'])==1:
 				category_id=categories['data'][0]['id']
 		else:
 			category_id=request.form['category_id']
-		perm=fb_call('me/permissions',args={'access_token': tokens['user_access_token']})
-		me=fb_call('me',args={'access_token': tokens['user_access_token'],'fields':'id'})
+		perm=fb.call('me/permissions',args={'access_token': tokens['user_access_token']})
+		me=fb.call('me',args={'access_token': tokens['user_access_token'],'fields':'id'})
 		# facebook object suggestion required fields ( og:title:'<the suggestion text>', creator_id:'<int:me.id>',pos_votes:<int>, neg_votes:<int>,closed:<bool>)
 		if me.has_key('id'):
-		  fbc=fb_call('app/objects/'+FBNS+':suggestion',args={'access_token': tokens['app_access_token'],'method':'POST', 'object': "{'title':'"+content+"','data':{'creator_id':'"+str(me['id'])+"','pos_votes':'0','neg_votes':'0','category_id':'"+category_id+"','closed':'False'}}" })
+		  fbc=fb.call('app/objects/'+FBNS+':suggestion',args={'access_token': tokens['app_access_token'],'method':'POST', 'object': "{'title':'"+content+"','data':{'creator_id':'"+str(me['id'])+"','pos_votes':'0','neg_votes':'0','category_id':'"+category_id+"','closed':'False'}}" })
 		else:
 			fbc={}
 		#facebook object user_suggestion required fields ( og:title:'<empty string>', suggestion_id:<int> )
 		if fbc.has_key('id'):
-		  fbc1=fb_call('me/objects/'+FBNS+':user_suggestion',args={'access_token': tokens['user_access_token'],'method':'POST', 'object': "{'title':'','data':{'suggestion_id':'"+fbc['id']+"'}}" })
+		  fbc1=fb.call('me/objects/'+FBNS+':user_suggestion',args={'access_token': tokens['user_access_token'],'method':'POST', 'object': "{'title':'','data':{'suggestion_id':'"+fbc['id']+"'}}" })
 		else:
 			fbc1='error saving'
 
@@ -350,8 +148,8 @@ def suggestion_show(suggestion_id):
 	tokens=get_tokens()
 	if not tokens:
 		return "Error please try again"
-	me = fb_call('me', args={'access_token': tokens['user_access_token']})
-	suggestion=fb_call(str(suggestion_id),args={'access_token': tokens['app_access_token']})
+	me = fb.call('me', args={'access_token': tokens['user_access_token']})
+	suggestion=fb.call(str(suggestion_id),args={'access_token': tokens['app_access_token']})
 	return render_template('suggestion_show.html',me=me,content=str(suggestion)+str(request.form),suggestion_url='https://graph.facebook.com/'+str(suggestion_id))
 
 
