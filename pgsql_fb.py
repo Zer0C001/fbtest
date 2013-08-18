@@ -240,6 +240,7 @@ class fb_api:
 
 class data_fb:
 	def __init__(self,session):
+		print 'init data_fb'
 		self.fb=fb_api(session)
 		self.login_finished=False
 		
@@ -284,6 +285,7 @@ class data_fb:
 		
 class data_pgsql:
 	def __init__(self,db_url):
+		print 'init data_pgsql'
 		self.db_url=db_url
 	def new_suggestion(self,suggestion_id,creator_id,category_id):
 		self.get_cursor()
@@ -304,4 +306,9 @@ class data_pgsql:
 			print 'error connecting'
 		
 		
-		
+class data_pgsql_fb(data_pgsql,data_fb):
+	def __init__(self,db_url,session):
+		print 'init data_pgsql_fb'
+		data_pgsql.__init__(self,db_url)
+		data_fb.__init__(self,session)
+		raise NotImplementedError,"class not implemented yet"

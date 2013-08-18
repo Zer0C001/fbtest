@@ -48,7 +48,11 @@ def get_home():
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-	 # print get_home()
+	# print get_home()
+	try:
+		tst=pgsql_fb.data_pgsql_fb(db_url,session)
+	except:
+		print 'got exception'
 	fb=pgsql_fb.data_fb(session)
 	tokens=fb.login()
 	#print tokens
