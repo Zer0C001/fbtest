@@ -18,7 +18,8 @@ from Crypto import Random
 
 
 class fb_api:
-	def __init__(self):
+	def __init__(self,session):
+		self.session=session
 		self.FB_APP_ID = os.environ.get('FACEBOOK_APP_ID')
 		self.requests = requests.session()
 		self.app_url = 'https://graph.facebook.com/{0}'.format(self.FB_APP_ID)
@@ -29,6 +30,7 @@ class fb_api:
 		
 		
 	def get_tokens(self):
+		session=self.session
 		if session.has_key('fbtiv'):
 			fbtiv=base64.urlsafe_b64decode(session['fbtiv'])
 		else:
@@ -87,7 +89,7 @@ class fb_api:
 			# 'fb_exchange_token':access_token} 
 			if type(access_token)==list:
 				access_token=access_token[0]
-			new_token=requests.get('https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id='+str(FB_APP_ID)+'&client_secret='+FB_APP_SECRET+'&fb_exchange_token='+access_token)
+			new_token=requests.get('https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id='+str(self.FB_APP_ID)+'&client_secret='+self.FB_APP_SECRET+'&fb_exchange_token='+access_token)
 			new_token=new_token.content
 			pairs = new_token.split("&", 1)
 			result_dict = {}

@@ -31,7 +31,7 @@ app_secret_key =  hashlib.sha256(FB_APP_SECRET).digest()
 
 import pgsql_fb
 
-fb=pgsql_fb.fb_api()
+fb=pgsql_fb.fb_api(session)
 
 app = Flask(__name__)
 app.config.from_object(__name__)
