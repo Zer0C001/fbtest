@@ -51,7 +51,7 @@ def index():
 	 # print get_home()
 	fb=pgsql_fb.data_fb(session)
 	tokens=fb.login()
-	print tokens
+	#print tokens
 	channel_url = url_for('get_channel', _external=True)
 	channel_url = channel_url.replace('http:', '').replace('https:', '')
 
