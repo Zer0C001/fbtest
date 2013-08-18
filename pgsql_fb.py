@@ -192,7 +192,7 @@ class fb_api:
 	    if request.args.get('code', None):
 	        return fbapi_auth(request.args.get('code'))[0]
 
-	    cookie_key = 'fbsr_{0}'.format(FB_APP_ID)
+	    cookie_key = 'fbsr_{0}'.format(self.FB_APP_ID)
 
 	    if cookie_key in request.cookies:
 
