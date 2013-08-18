@@ -191,7 +191,8 @@ class fb_api:
 	    return json.loads(r.content)
 	    
 	def get_token(self):
-
+	    print 'get short token'
+	    
 	    if request.args.get('code', None):
 	        return fbapi_auth(request.args.get('code'))[0]
 
