@@ -41,7 +41,7 @@ class fb_api:
 		try:
 			app_access_token=self.app_access_token
 		except AttributeError:
-			print 'no app_access_token in self'
+			#print 'no app_access_token in self'
 			app_access_token=self.get_application_access_token(self.FB_APP_ID)
 			self.app_access_token=app_access_token
 		#
@@ -50,30 +50,30 @@ class fb_api:
 		try:
 			long_uat=self.user_access_token
 		except:
-			print 'no user_access_token in self'
+			#print 'no user_access_token in self'
 			has_uat=False
 			if session.has_key('long_uat'):
 				has_uat=True
 				try:
 			  		tmp_long_uat=cipher.decrypt(base64.urlsafe_b64decode(session['long_uat']))
 				except:
-					print 'exception in decrypt/decode'
+					#print 'exception in decrypt/decode'
 					has_uat=False
-			print 'line 60'
+			#print 'line 62'
 			if has_uat and (self.is_valid(app_access_token,tmp_long_uat)):
 				long_uat=tmp_long_uat
 				self.user_access_token=long_uat
-				print 'has uat'
+				#print 'has uat'
 			else:
 				access_token = self.get_token()
 				# try twice ?
 				if not access_token:
 					access_token = self.get_token()
 				if not access_token or not self.is_valid(app_access_token,access_token):
-					print 'no access token'
+					#print 'no access token'
 					return False	
 				long_uat=self.extend_token(access_token)
-				print 'line 73'
+				#print 'line 76'
 				if not self.is_valid(app_access_token,long_uat):
 					return False
 				else:
@@ -241,11 +241,15 @@ class fb_api:
 class data_fb:
 	def __init__(self,session):
 		self.fb=fb_api(session)
+		self.login_finished=False
 		
 		
 	def login(self):
-		print 'login'
-		self.tokens=self.fb.get_tokens()
+		if not self.login_finished:
+			print 'login'
+			self.tokens=self.fb.get_tokens()
+			self.login_finished=True
+		
 		return self.tokens
 		
 	def me(self,strict=True):
