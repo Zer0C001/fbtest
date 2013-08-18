@@ -140,7 +140,7 @@ def suggestion_new():
 		if fbc.has_key('id'):
 		  fbc1=fb.call('me/objects/'+FBNS+':user_suggestion',args={'access_token': tokens['user_access_token'],'method':'POST', 'object': "{'title':'','data':{'suggestion_id':'"+fbc['id']+"'}}" })
 		  
-		  pg=pgsql_fb.data_pgsql()
+		  pg=pgsql_fb.data_pgsql(db_url)
 		  pg0=pg.new_suggestion(suggestion_id=fbc['id'],creator_id=me['id'],category_id=category_id)
 		  
 		else:
