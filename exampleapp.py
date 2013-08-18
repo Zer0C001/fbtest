@@ -47,8 +47,8 @@ def get_home():
 @app.route('/', methods=['GET', 'POST'])
 def index():
     # print get_home()
-    fb=pgsql_fb.fb_api(session)
-    tokens=fb.get_tokens()
+    fb=pgsql_fb.data_fb(session)
+    tokens=fb.login()
     print tokens
 
     channel_url = url_for('get_channel', _external=True)
@@ -56,19 +56,19 @@ def index():
 
     if tokens:
 
-        me = fb.call('me', args={'access_token': tokens['user_access_token']})
-        fb_app = fb.call(FB_APP_ID, args={'access_token': tokens['user_access_token']})
+        me = fb.fb.call('me', args={'access_token': tokens['user_access_token']})
+        fb_app = fb.fb.call(FB_APP_ID, args={'access_token': tokens['user_access_token']})
 
         redir = get_home() + 'close/'
         url = request.url
         
         	
-        categories=fb.call('app/objects/'+FBNS+':category',args={'access_token': tokens['app_access_token']})
+        categories=fb.fb.call('app/objects/'+FBNS+':category',args={'access_token': tokens['app_access_token']})
         num_cat=len(categories['data'])
         content=''
         if num_cat==0:
-        	init_cat=fb.call('app/objects/'+FBNS+':category',args={'access_token': tokens['app_access_token'],'method':'POST', 'object': "{'title':'Uncategorized'}"})
-        suggestions=fb.call('app/objects/'+FBNS+':suggestion',args={'access_token': tokens['app_access_token'],'fields':'id,created_time,data'})#,pos_votes,neg_votes,category_id'})
+        	init_cat=fb.fb.call('app/objects/'+FBNS+':category',args={'access_token': tokens['app_access_token'],'method':'POST', 'object': "{'title':'Uncategorized'}"})
+        suggestions=fb.fb.call('app/objects/'+FBNS+':suggestion',args={'access_token': tokens['app_access_token'],'fields':'id,created_time,data'})#,pos_votes,neg_votes,category_id'})
         sort=request.args.get('sort','votes')
         if suggestions.has_key('data'):
         	suggestions=suggestions['data']
@@ -83,7 +83,7 @@ def index():
         #	suggestions=l_obj
         disp_suggestions=[]
         for i in range(0,min(10,len(suggestions))):
-	  disp_sug=fb.call(suggestions[i]['id'],args={'access_token': tokens['app_access_token']})
+	  disp_sug=fb.fb.call(suggestions[i]['id'],args={'access_token': tokens['app_access_token']})
 	  disp_suggestions+=[disp_sug]
 	  content=''#+str(disp_suggestions)+str(request.args)#+' '+str(request.form)+str(request.cookies)
         return render_template(

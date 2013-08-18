@@ -230,3 +230,10 @@ class fb_api:
 	        token = parse_qs(r.content).get('access_token')
 	        return token
 
+
+class data_fb:
+	def __init__(self,session):
+		self.fb=fb_api(session)
+	def login(self):
+		self.tokens=self.fb.get_tokens()
+		return self.tokens
