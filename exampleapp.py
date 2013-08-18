@@ -31,7 +31,7 @@ app_secret_key =  hashlib.sha256(FB_APP_SECRET).digest()
 
 import pgsql_fb
 
-fb=pgsql_fb.fb_api(session)
+
 
 app = Flask(__name__)
 app.config.from_object(__name__)
@@ -47,6 +47,7 @@ def get_home():
 @app.route('/', methods=['GET', 'POST'])
 def index():
     # print get_home()
+    fb=pgsql_fb.fb_api(session)
     tokens=fb.get_tokens()
     print tokens
 
@@ -107,6 +108,7 @@ def close():
 
 @app.route('/suggestion/new', methods=['GET', 'POST'])
 def suggestion_new():
+	fb=pgsql_fb.fb_api(session)
 	if request.method=="GET":
 	  tokens=fb.get_tokens()
 	  if not tokens:
@@ -114,7 +116,7 @@ def suggestion_new():
 	  me = fb.call('me', args={'access_token': tokens['user_access_token']})
 	  return render_template('suggestion_new.html',me=me)
 	elif request.method=="POST":
-		tokens=get_tokens()
+		tokens=fb.get_tokens()
 		if not tokens:
 			return "Error please try again"
 		me = fb.call('me', args={'access_token': tokens['user_access_token']})
@@ -145,7 +147,8 @@ def suggestion_new():
 	
 @app.route('/suggestion/<int:suggestion_id>', methods=['GET', 'POST'])
 def suggestion_show(suggestion_id):
-	tokens=get_tokens()
+	fb=pgsql_fb.fb_api(session)
+	tokens=fb.get_tokens()
 	if not tokens:
 		return "Error please try again"
 	me = fb.call('me', args={'access_token': tokens['user_access_token']})
