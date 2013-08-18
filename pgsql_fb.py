@@ -57,8 +57,10 @@ class fb_api:
 				except:
 					print 'exception in decrypt/decode'
 					has_uat=False
+			print 'line 60'
 			if has_uat and (self.is_valid(app_access_token,tmp_long_uat)):
 				long_uat=tmp_long_uat
+				print 'has uat'
 			else:
 				access_token = self.get_token()
 				# try twice ?
@@ -68,6 +70,7 @@ class fb_api:
 					print 'no access token'
 					return False	
 				long_uat=self.extend_token(access_token)
+				print 'line 73'
 				if not self.is_valid(app_access_token,long_uat):
 					return False
 				else:
