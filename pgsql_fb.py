@@ -245,6 +245,8 @@ class data_fb:
 		except:
 			me=False 
 		if not strict:
+			if type(me)==bool:
+				me={}
 			if not me.haskey('name'):
 				me['name']=''
 			if not me.haskey('id'):
