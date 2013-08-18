@@ -41,6 +41,7 @@ class fb_api:
 		try:
 			app_access_token=self.app_access_token
 		except AttributeError:
+			print 'no app_access_token in self'
 			app_access_token=self.get_application_access_token(self.FB_APP_ID)
 			self.app_access_token=app_access_token
 		#
@@ -49,6 +50,7 @@ class fb_api:
 		try:
 			long_uat=self.user_access_token
 		except:
+			print 'no user_access_token in self'
 			has_uat=False
 			if session.has_key('long_uat'):
 				has_uat=True
