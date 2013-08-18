@@ -248,8 +248,7 @@ class data_fb:
 		if not self.login_finished:
 			print 'login'
 			self.tokens=self.fb.get_tokens()
-			self.login_finished=True
-		
+			self.login_finished=True		
 		return self.tokens
 		
 	def me(self,strict=True):

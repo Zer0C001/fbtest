@@ -101,37 +101,37 @@ def close():
 
 @app.route('/suggestion/new', methods=['GET', 'POST'])
 def suggestion_new():
-	fb=pgsql_fb.fb_api(session)
+	fb=pgsql_fb.data_fb(session)
 	if request.method=="GET":
-	  tokens=fb.get_tokens()
+	  tokens=fb.login()
 	  if not tokens:
 	  	return "Error please try again"
-	  me = fb.call('me', args={'access_token': tokens['user_access_token']})
+	  me = fb.me()
 	  return render_template('suggestion_new.html',me=me)
 	elif request.method=="POST":
-		tokens=fb.get_tokens()
+		tokens=fb.login()
 		if not tokens:
 			return "Error please try again"
-		me = fb.call('me', args={'access_token': tokens['user_access_token']})
+		me = fb.me()
 		channel_url = url_for('get_channel', _external=True)
 		channel_url = channel_url.replace('http:', '').replace('https:', '') 
 		content=request.form['content']
 		if (not request.form.has_key('category_id')) or request.form['category_id']=='' or request.form['category_id']==None:
-			categories=fb.call('app/objects/'+FBNS+':category',args={'access_token': tokens['app_access_token']})
+			categories=fb.fb.call('app/objects/'+FBNS+':category',args={'access_token': tokens['app_access_token']})
 			if len(categories['data'])==1:
 				category_id=categories['data'][0]['id']
 		else:
 			category_id=request.form['category_id']
-		perm=fb.call('me/permissions',args={'access_token': tokens['user_access_token']})
-		me=fb.call('me',args={'access_token': tokens['user_access_token'],'fields':'id'})
+		perm=fb.fb.call('me/permissions',args={'access_token': tokens['user_access_token']})
+		me=fb.me()
 		# facebook object suggestion required fields ( og:title:'<the suggestion text>', creator_id:'<int:me.id>',pos_votes:<int>, neg_votes:<int>,closed:<bool>)
-		if me.has_key('id'):
-		  fbc=fb.call('app/objects/'+FBNS+':suggestion',args={'access_token': tokens['app_access_token'],'method':'POST', 'object': "{'title':'"+content+"','data':{'creator_id':'"+str(me['id'])+"','pos_votes':'0','neg_votes':'0','category_id':'"+category_id+"','closed':'False'}}" })
+		if not type(me)==bool and me.has_key('id'):
+		  fbc=fb.fb.call('app/objects/'+FBNS+':suggestion',args={'access_token': tokens['app_access_token'],'method':'POST', 'object': "{'title':'"+content+"','data':{'creator_id':'"+str(me['id'])+"','pos_votes':'0','neg_votes':'0','category_id':'"+category_id+"','closed':'False'}}" })
 		else:
 			fbc={}
 		#facebook object user_suggestion required fields ( og:title:'<empty string>', suggestion_id:<int> )
 		if fbc.has_key('id'):
-		  fbc1=fb.call('me/objects/'+FBNS+':user_suggestion',args={'access_token': tokens['user_access_token'],'method':'POST', 'object': "{'title':'','data':{'suggestion_id':'"+fbc['id']+"'}}" })
+		  fbc1=fb.fb.call('me/objects/'+FBNS+':user_suggestion',args={'access_token': tokens['user_access_token'],'method':'POST', 'object': "{'title':'','data':{'suggestion_id':'"+fbc['id']+"'}}" })
 		  
 		  pg=pgsql_fb.data_pgsql(db_url)
 		  pg0=pg.new_suggestion(suggestion_id=fbc['id'],creator_id=me['id'],category_id=category_id)
