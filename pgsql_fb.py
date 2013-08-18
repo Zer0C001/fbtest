@@ -158,7 +158,7 @@ class fb_api:
 	        result_dict[key] = value
 	    return (result_dict["access_token"], result_dict["expires"])
 	
-	def fbapi_get_application_access_token(self,id):
+	def get_application_access_token(self,id):
 	 token=requests.get('https://graph.facebook.com/oauth/access_token?grant_type=client_credentials&client_id='+id+'&client_secret='+FB_APP_SECRET)
 	 token=token.content
 	 token=token.split('=')[-1]
