@@ -1,11 +1,13 @@
 {% extends "base.html" %}
+
+
 {% block head %}
 <script type="text/javascript" src="/static/jquery.shorten.js"></script>
 {% endblock %}
-{% block topbar %}
 
-  <div>
-    Welcome, <strong>{{me.name}}</strong><br>
+
+{% block topbar %}
+  Welcome, <strong>{{me.name}}</strong><br>
     {% if me.id == 0 %}
       <div id="login-flow">
    	 <fb:login-button perms="{{ permission_list }}" show-faces="false" onlogin="window.location = window.location;"></fb:login-button>
@@ -14,7 +16,6 @@
     {% else %}
       <a href="/suggestion/new"> New suggestion</a>
     {% endif %}
-  </div>
 
 {% endblock %}
 {% block content %}

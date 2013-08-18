@@ -130,6 +130,7 @@
     </script>
 
     <header>
+    <div>
       {% block topbar %}
       Welcome, <strong>{{me.name}}</strong>
 	      {% if me.id == 0 %}
@@ -141,7 +142,7 @@
       	<a href="/">Home</a><br> -->
 
       {% endblock %}
-    
+    </div>
     </header>
     <section class="clearfix" id="content">
 
