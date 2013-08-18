@@ -56,17 +56,13 @@ def index():
 	channel_url = channel_url.replace('http:', '').replace('https:', '')
 
 	me = fb.me(strict=False)
-	fb_app = fb.fb.call(FB_APP_ID, args={'access_token': fb.fb.app_access_token})
+	fb_app = fb.get_fb_app()
 	
 	redir = get_home() + 'close/'
 	url = request.url
-	  
 	  	
-	categories=fb.fb.call('app/objects/'+FBNS+':category',args={'access_token': fb.fb.app_access_token})
-	num_cat=len(categories['data'])
-	content=''
-	if num_cat==0:
-	  	init_cat=fb.fb.call('app/objects/'+FBNS+':category',args={'access_token': fb.fb.app_access_token,'method':'POST', 'object': "{'title':'Uncategorized'}"})
+	categories=fb.get_categories()
+	
 	suggestions=fb.fb.call('app/objects/'+FBNS+':suggestion',args={'access_token': fb.fb.app_access_token,'fields':'id,created_time,data'})#,pos_votes,neg_votes,category_id'})
 	sort=request.args.get('sort','votes')
 	if suggestions.has_key('data'):
@@ -82,7 +78,7 @@ def index():
 	  #	suggestions=l_obj
 	disp_suggestions=[]
 	for i in range(0,min(10,len(suggestions))):
-	  disp_sug=fb.fb.call(suggestions[i]['id'],args={'access_token': fb.fb.app_access_token})
+	  disp_sug=fb.get_suggestion(suggestions[i]['id'])
 	  disp_suggestions+=[disp_sug]
 	content=''#+str(disp_suggestions)+str(request.args)#+' '+str(request.form)+str(request.cookies)
 	
@@ -145,6 +141,8 @@ def suggestion_new():
 			pg0="fbc_err"
 		dbg="save suggestion: <br>"+content+"<br>"+str(fbc)+"<br>"+str(fbc1)+'\n pg:'+str(pg0)+' <br>user: '+str(me)+'<br>perms:<br>'+str(perm)+'<br><br>'+str(request.form)
 		return render_template('suggestion_saved.html',me=me,dbg=dbg,content='')
+	
+	
 	
 @app.route('/suggestion/<int:suggestion_id>', methods=['GET', 'POST'])
 def suggestion_show(suggestion_id):

@@ -234,10 +234,12 @@ class fb_api:
 class data_fb:
 	def __init__(self,session):
 		self.fb=fb_api(session)
-		# app only token=self.fb.app_access_token
+		
+		
 	def login(self):
 		self.tokens=self.fb.get_tokens()
 		return self.tokens
+		
 	def me(self,strict=True):
 		self.login()
 		try:
@@ -252,6 +254,21 @@ class data_fb:
 			if not me.has_key('id'):
 				me['id']=0
 		return me
+		
+	def get_fb_app(self):
+		fb_app = self.fb.call(self.fb.FB_APP_ID, args={'access_token': self.fb.app_access_token})
+		return fb_app
+		
+	def get_categories(self):
+		categories=self.fb.call('app/objects/'+self.fb.FBNS+':category',args={'access_token': self.fb.app_access_token})
+		num_cat=len(categories['data'])
+		if num_cat==0:
+		 	init_cat=self.fb.call('app/objects/'+self.fb.FBNS+':category',args={'access_token': self.fb.app_access_token,'method':'POST', 'object': "{'title':'Uncategorized'}"})
+		 	categories=self.fb.call('app/objects/'+self.fb.FBNS+':category',args={'access_token': self.fb.app_access_token})
+		return categories
+		
+	def get_suggestion(self,suggestion_id):
+		return self.fb.call(suggestion_id,args={'access_token': self.fb.app_access_token})
 		
 		
 class data_pgsql:
