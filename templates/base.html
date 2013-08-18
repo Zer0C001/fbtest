@@ -133,14 +133,13 @@
     <div>
       {% block topbar %}
       Welcome, <strong>{{me.name}}</strong><br>
-	      {% if me.id == 0 %}
+	      <!-- {% if me.id == 0 %}
 		      <div id="login-flow">
 		   	 <fb:login-button perms="{{ permission_list }}" show-faces="false" onlogin="window.location = window.location;"></fb:login-button>
 		 	   </div>
 		 	   <br>
-			{% endif %}
-			
-      	<a href="/">Home</a><br> 
+			{% endif %} -->
+			<a href="/">Home</a><br> 
 
       {% endblock %}
     </div>
