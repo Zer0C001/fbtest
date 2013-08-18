@@ -21,7 +21,7 @@ class fb_api:
 	def __init__(self):
 		self.FB_APP_ID = os.environ.get('FACEBOOK_APP_ID')
 		self.requests = requests.session()
-		self.app_url = 'https://graph.facebook.com/{0}'.format(FB_APP_ID)
+		self.app_url = 'https://graph.facebook.com/{0}'.format(self.FB_APP_ID)
 		self.FB_APP_NAME = json.loads(requests.get(app_url).content).get('name')
 		self.FB_APP_SECRET = os.environ.get('FACEBOOK_SECRET')
 		self.FBNS=os.environ.get('FBNS')
