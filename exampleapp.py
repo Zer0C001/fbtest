@@ -37,6 +37,8 @@ app = Flask(__name__)
 app.config.from_object(__name__)
 app.config.from_object('conf.Config')
 app.secret_key=app_secret_key
+permission_list = ",".join(app.config['FBAPI_SCOPE'])
+
 
 def get_home():
     return 'https://' + request.host + '/'
@@ -83,7 +85,6 @@ def index():
 	  disp_sug=fb.fb.call(suggestions[i]['id'],args={'access_token': fb.fb.app_access_token})
 	  disp_suggestions+=[disp_sug]
 	content=''#+str(disp_suggestions)+str(request.args)#+' '+str(request.form)+str(request.cookies)
-	permission_list = ",".join(app.config['FBAPI_SCOPE'])
 	
 	return render_template(
 	      'index.html', app_id=FB_APP_ID, app=fb_app,
@@ -151,7 +152,7 @@ def suggestion_show(suggestion_id):
 	tokens=fb.login()
 	me = fb.me(strict=False)
 	suggestion=fb.fb.call(str(suggestion_id),args={'access_token': fb.fb.app_access_token})
-	return render_template('suggestion_show.html',me=me,content=str(suggestion)+str(request.form),suggestion_url=get_home()+'suggestion/'+str(suggestion_id))
+	return render_template('suggestion_show.html',me=me,content=str(suggestion)+str(request.form),suggestion_url=get_home()+'suggestion/'+str(suggestion_id),permission_list=permission_list)
 
 
 
