@@ -101,8 +101,8 @@ class fb_api:
 
 	def is_valid(self,app_access_token,input_token):
 			dbg = self.call('debug_token', args={'access_token': app_access_token,'input_token':input_token})
-			#print 'is_valid:'
-			#print dbg
+			print 'is_valid:'
+			print dbg
 			if dbg.has_key('data') and dbg['data'].has_key('is_valid'):
 				return dbg['data']['is_valid']
 			else:
