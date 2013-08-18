@@ -241,6 +241,7 @@ class data_fb:
 		
 		
 	def login(self):
+		print 'login'
 		self.tokens=self.fb.get_tokens()
 		return self.tokens
 		
