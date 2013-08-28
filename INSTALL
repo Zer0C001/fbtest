@@ -1,0 +1,4 @@
+add FBNS var to heroku config, and Namespace in your facebook basic app settings
+add postgresql addon to heroku :  heroku addons:add heroku-postgresql:dev
+promote the database  : heroku pg:promote HEROKU_POSTGRESQL_{COLOR}_URL
+execute create_table.sql : cat create_table.sql | heroku pg:psql
