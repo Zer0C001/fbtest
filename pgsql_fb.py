@@ -62,8 +62,7 @@ class fb_api:
 		#
 		if self.skip_user_token:
 			## user is apparently not logged in, so delete session and return false
-			session['fbtiv']=False
-			session['long_uat']=False
+			session.clear()
 			return False
 		try:
 			tmp_long_uat=self.user_access_token
