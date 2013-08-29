@@ -28,6 +28,11 @@ class fb_api:
 		self.FBNS=os.environ.get('FBNS')
 		self.app_secret_key =  hashlib.sha256(self.FB_APP_SECRET).digest()
 		
+	def process_signed_request(self,form):
+		if form.has_key('signed_request'):
+			sr=form['signed_request']
+			sr.split('.')
+			return json.loads(loadbase64.b64decode(sr[1]+'=='))
 		
 	def get_tokens(self):
 		session=self.session
@@ -244,6 +249,9 @@ class data_fb:
 		self.fb=fb_api(session)
 		self.login_finished=False
 		
+		
+	def on_index(self,request)
+		print str(self.fb.process_signed_request(request.form))
 		
 	def login(self):
 		if not self.login_finished:

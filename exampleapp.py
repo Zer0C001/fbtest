@@ -48,7 +48,7 @@ def get_home():
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-	print str(request.form)
+	#print str(request.form)
 	# print get_home()
 	try:
 		tst=pgsql_fb.data_pgsql_fb(db_url,session)
@@ -62,7 +62,7 @@ def index():
 
 	me = fb.me(strict=False)
 	fb_app = fb.get_fb_app()
-	
+	fb.on_index(request)
 	redir = get_home() + 'close/'
 	url = request.url
 	  	
