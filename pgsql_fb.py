@@ -32,7 +32,7 @@ class fb_api:
 		if form.has_key('signed_request'):
 			sr=form['signed_request']
 			sr.split('.')
-			return json.loads(loadbase64.b64decode(sr[1]+'=='))
+			return json.loads(base64.b64decode(sr[1]+'=='))
 		
 	def get_tokens(self):
 		session=self.session
