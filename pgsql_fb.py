@@ -134,9 +134,10 @@ class fb_api:
 			print dbg
 			print self.session
 			if dbg.has_key('data') and dbg['data'].has_key('is_valid'):
-				if self.user_id:
-					print 'has uid'
+				if dbg['data']['is_valid'] and self.user_id:
+					print 'has uid and valid token'
 					if self.user_id!=dbg['data']['user_id']:
+						print 'uid mismatch'
 						return False
 				return dbg['data']['is_valid']
 			else:
