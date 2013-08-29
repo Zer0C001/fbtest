@@ -43,8 +43,6 @@ class fb_api:
 			return srq
 		
 	def get_tokens(self):
-		if self.skip_tokens:
-			return False
 		session=self.session
 		if session.has_key('fbtiv'):
 			fbtiv=base64.urlsafe_b64decode(session['fbtiv'])
@@ -62,6 +60,8 @@ class fb_api:
 		#
 		# get long lived user access token
 		#
+		if self.skip_tokens:
+			return False
 		try:
 			tmp_long_uat=self.user_access_token
 			has_uat=True
