@@ -28,7 +28,7 @@ class fb_api:
 		self.FBNS=os.environ.get('FBNS')
 		self.app_secret_key =  hashlib.sha256(self.FB_APP_SECRET).digest()
 		self.user_id=False
-		self.skip_tokens=False
+		self.skip_user_token=False
 		
 	def process_signed_request(self,form):
 		if form.has_key('signed_request'):
@@ -39,7 +39,7 @@ class fb_api:
 				self.user_id=int(srq['user_id'])
 				self.user_access_token=srq['oauth_token']
 			else:
-				self.skip_tokens=True
+				self.skip_user_token=True
 			return srq
 		
 	def get_tokens(self):
@@ -60,7 +60,10 @@ class fb_api:
 		#
 		# get long lived user access token
 		#
-		if self.skip_tokens:
+		if self.skip_user_token:
+			## user is apparently not logged in, so delete session and return false
+			session['fbtiv']=False
+			session['long_uat']=False
 			return False
 		try:
 			tmp_long_uat=self.user_access_token
