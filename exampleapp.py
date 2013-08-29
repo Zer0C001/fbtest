@@ -48,6 +48,7 @@ def get_home():
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
+	print str(request.form)
 	# print get_home()
 	try:
 		tst=pgsql_fb.data_pgsql_fb(db_url,session)
