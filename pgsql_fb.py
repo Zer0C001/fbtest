@@ -34,7 +34,7 @@ class fb_api:
 			sr=form['signed_request']
 			sr=sr.split('.')
 			srq=json.loads(base64.b64decode(sr[1]+'=='))
-			self.user_id=int(sr['user_id'])
+			self.user_id=int(srq['user_id'])
 			return srq
 		
 	def get_tokens(self):
