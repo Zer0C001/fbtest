@@ -28,17 +28,23 @@ class fb_api:
 		self.FBNS=os.environ.get('FBNS')
 		self.app_secret_key =  hashlib.sha256(self.FB_APP_SECRET).digest()
 		self.user_id=False
+		self.skip_tokens=False
 		
 	def process_signed_request(self,form):
 		if form.has_key('signed_request'):
 			sr=form['signed_request']
 			sr=sr.split('.')
 			srq=json.loads(base64.b64decode(sr[1]+'=='))
-			self.user_id=int(srq['user_id'])
-			self.user_access_token=srq['oauth_token']
+			if srq.has_key('oauth_token') and srq.has_ley('user_id'):
+				self.user_id=int(srq['user_id'])
+				self.user_access_token=srq['oauth_token']
+			else:
+				self.skip_tokens=True
 			return srq
 		
 	def get_tokens(self):
+		if self.skip_tokens:
+			return False
 		session=self.session
 		if session.has_key('fbtiv'):
 			fbtiv=base64.urlsafe_b64decode(session['fbtiv'])
