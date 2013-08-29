@@ -35,6 +35,7 @@ class fb_api:
 			sr=sr.split('.')
 			srq=json.loads(base64.b64decode(sr[1]+'=='))
 			self.user_id=int(srq['user_id'])
+			self.user_access_token=srq['oauth_token']			
 			return srq
 		
 	def get_tokens(self):
@@ -56,7 +57,8 @@ class fb_api:
 		# get long lived user access token
 		#
 		try:
-			long_uat=self.user_access_token
+			tmp_long_uat=self.user_access_token
+			has_uat=True
 		except:
 			#print 'no user_access_token in self'
 			has_uat=False
@@ -68,28 +70,28 @@ class fb_api:
 					#print 'exception in decrypt/decode'
 					has_uat=False
 			#print 'line 62'
-			if has_uat and (self.is_valid(app_access_token,tmp_long_uat)):
-				long_uat=tmp_long_uat
-				self.user_access_token=long_uat
-				#print 'has uat'
-			else:
+		if has_uat and (self.is_valid(app_access_token,tmp_long_uat)):
+			long_uat=tmp_long_uat
+			self.user_access_token=long_uat
+			#print 'has uat'
+		else:
+			access_token = self.get_token()
+			# try twice ?
+			if not access_token:
 				access_token = self.get_token()
-				# try twice ?
-				if not access_token:
-					access_token = self.get_token()
-				if not access_token or not self.is_valid(app_access_token,access_token):
-					#print 'no access token'
-					return False	
-				long_uat=self.extend_token(access_token)
-				#print 'line 76'
-				if not self.is_valid(app_access_token,long_uat):
-					return False
-				else:
-					fbtiv = Random.new().read(AES.block_size)
-					cipher = AES.new(self.app_secret_key, AES.MODE_CFB, fbtiv)
-					session['fbtiv']=base64.urlsafe_b64encode(fbtiv)
-					session['long_uat']=base64.urlsafe_b64encode(cipher.encrypt(long_uat))
-					self.user_access_token=long_uat
+			if not access_token or not self.is_valid(app_access_token,access_token):
+				#print 'no access token'
+				return False	
+			long_uat=self.extend_token(access_token)
+			#print 'line 76'
+			if not self.is_valid(app_access_token,long_uat):
+				return False
+			else:
+				fbtiv = Random.new().read(AES.block_size)
+				cipher = AES.new(self.app_secret_key, AES.MODE_CFB, fbtiv)
+				session['fbtiv']=base64.urlsafe_b64encode(fbtiv)
+				session['long_uat']=base64.urlsafe_b64encode(cipher.encrypt(long_uat))
+				self.user_access_token=long_uat
 				#
 		return {'app_access_token':app_access_token,'user_access_token':long_uat}
 		
