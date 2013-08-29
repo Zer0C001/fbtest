@@ -250,7 +250,7 @@ class data_fb:
 		self.login_finished=False
 		
 		
-	def on_index(self,request)
+	def on_index(self,request):
 		print str(self.fb.process_signed_request(request.form))
 		
 	def login(self):
