@@ -97,15 +97,15 @@ class fb_api:
 			long_uat=self.extend_token(access_token)
 			#print 'line 76'
 			if not self.is_valid(app_access_token,long_uat):
+				session.clear()
 				return False
 			else:
 				fbtiv = Random.new().read(AES.block_size)
 				cipher = AES.new(self.app_secret_key, AES.MODE_CFB, fbtiv)
 				self.user_access_token=long_uat
-				#	
-			fbtiv = Random.new().read(AES.block_size)
-			session['fbtiv']=base64.urlsafe_b64encode(fbtiv)
-			session['long_uat']=base64.urlsafe_b64encode(cipher.encrypt(long_uat))
+				#
+				session['fbtiv']=base64.urlsafe_b64encode(fbtiv)
+				session['long_uat']=base64.urlsafe_b64encode(cipher.encrypt(long_uat))
 		return {'app_access_token':app_access_token,'user_access_token':long_uat}
 		
 			
