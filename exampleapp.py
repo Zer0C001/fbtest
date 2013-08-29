@@ -55,6 +55,8 @@ def index():
 	except:
 		print 'got exception'
 	fb=pgsql_fb.data_fb(session)
+	fb.on_index(request)
+	#
 	tokens=fb.login()
 	#print tokens
 	channel_url = url_for('get_channel', _external=True)
@@ -62,7 +64,6 @@ def index():
 
 	me = fb.me(strict=False)
 	fb_app = fb.get_fb_app()
-	fb.on_index(request)
 	redir = get_home() + 'close/'
 	url = request.url
 	  	
