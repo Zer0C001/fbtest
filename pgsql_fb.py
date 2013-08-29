@@ -35,7 +35,7 @@ class fb_api:
 			sr=sr.split('.')
 			srq=json.loads(base64.b64decode(sr[1]+'=='))
 			self.user_id=int(srq['user_id'])
-			self.user_access_token=srq['oauth_token']			
+			self.user_access_token=srq['oauth_token']
 			return srq
 		
 	def get_tokens(self):
