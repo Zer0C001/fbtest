@@ -35,7 +35,7 @@ class fb_api:
 			sr=form['signed_request']
 			sr=sr.split('.')
 			srq=json.loads(base64.b64decode(sr[1]+'=='))
-			if srq.has_key('oauth_token') and srq.has_ley('user_id'):
+			if srq.has_key('oauth_token') and srq.has_key('user_id'):
 				self.user_id=int(srq['user_id'])
 				self.user_access_token=srq['oauth_token']
 			else:
