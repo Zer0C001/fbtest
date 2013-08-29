@@ -37,7 +37,7 @@ class fb_api:
 			srq=json.loads(base64.b64decode(sr[1]+'=='))
 			if srq.has_key('oauth_token') and srq.has_key('user_id'):
 				self.user_id=int(srq['user_id'])
-				self.user_access_token=srq['oauth_token']
+				self.user_short_access_token=srq['oauth_token']
 			else:
 				self.skip_user_token=True
 			return srq
@@ -83,13 +83,17 @@ class fb_api:
 			self.user_access_token=long_uat
 			#print 'has uat'
 		else:
-			access_token = self.get_token()
-			# try twice ?
-			if not access_token:
+			try:
+				access_token=self.user_short_access_token
+			except:
 				access_token = self.get_token()
-			if not access_token or not self.is_valid(app_access_token,access_token):
-				#print 'no access token'
-				return False	
+				# try twice ?
+				if not access_token:
+					access_token = self.get_token()
+				if not access_token or not self.is_valid(app_access_token,access_token):
+					#print 'no access token'
+					session.clear()
+					return False	
 			long_uat=self.extend_token(access_token)
 			#print 'line 76'
 			if not self.is_valid(app_access_token,long_uat):
@@ -99,9 +103,9 @@ class fb_api:
 				cipher = AES.new(self.app_secret_key, AES.MODE_CFB, fbtiv)
 				self.user_access_token=long_uat
 				#	
-		fbtiv = Random.new().read(AES.block_size)
-		session['fbtiv']=base64.urlsafe_b64encode(fbtiv)
-		session['long_uat']=base64.urlsafe_b64encode(cipher.encrypt(long_uat))
+			fbtiv = Random.new().read(AES.block_size)
+			session['fbtiv']=base64.urlsafe_b64encode(fbtiv)
+			session['long_uat']=base64.urlsafe_b64encode(cipher.encrypt(long_uat))
 		return {'app_access_token':app_access_token,'user_access_token':long_uat}
 		
 			
